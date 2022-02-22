@@ -78,7 +78,7 @@ load('MNI_Seed_voxelData.mat','seeds_vox')
 
 seed_voxel_coords = seeds_vox(logical(seed_ind),:);
 
-PlotThalGradient3(score{3}(:,3),seed_voxel_coords,turbo(100),'Group PC1',2.1)
+PlotThalGradient3(score{3}(:,2),seed_voxel_coords,turbo(100),'Group PC1',2.1)
 print(['./Figures/GroupPC1.png'],'-dpng')
 
 for i = 1:10
