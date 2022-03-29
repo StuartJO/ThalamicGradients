@@ -1,11 +1,16 @@
 
-addpath(genpath('F:\Documents\ThalTractSeed\BrainSpace-master'))
+addpath(genpath('C:\Users\Stuart\Desktop\ThalTractSeed_data\BrainSpace-master'))
 load('Seed_voxelData.mat')
 load('MNI_Seed_voxelData.mat')
-load('ThalTractGeneData_926seeds_84subs.mat')
-load('Sub_ThalSeed.mat')
-for i = 1:84
-    data = ThalSeed(:,1:250,i);
+load('Sub76_ThalData.mat')
+%load('ThalTractGeneData_926seeds_84subs.mat')
+%load('Sub_ThalSeed.mat')
+load('TwinSub_ThalData.mat')
+
+Ntwinsubs = size(TwinThalSeed,3);
+
+for i = 1:Ntwinsubs
+    data = TwinThalSeed(:,1:250,i);
     norm_data = BF_NormalizeMatrix(data,'scaledSigmoid');
     norm_data(isnan(norm_data)) = 0;
     sub_data_norm{i} = norm_data;
@@ -24,13 +29,13 @@ all_scores = [score{3} sub_score];
 
 score_align = procrustes_alignment(sub_score,'reference',score{3});
 
-C_align = zeros(85);
+C_align = zeros(Ntwinsubs+1);
 
 C_align(1,1) = 1;
-for i = 1:84
+for i = 1:Ntwinsubs
     C_align(i+1,1) = corr(score_align{i}(:,1),score{3}(:,1),'Type','Spearman');
     C_align(1,i+1) = C_align(i+1,1);
-    for j = 1:84
+    for j = 1:Ntwinsubs
     c = corr(score_align{i}(:,1),score_align{j}(:,1),'Type','Spearman'); 
     C_align(i+1,j+1) = c; 
     C_align(j+1,i+1) = c;
@@ -38,8 +43,8 @@ for i = 1:84
 end
 
 
-C_orig = zeros(250,84);
-for i = 1:84
+C_orig = zeros(250,Ntwinsubs);
+for i = 1:Ntwinsubs
     C_orig(:,i) = corr(sub_score{i},score{3}(:,1),'Type','Spearman');
 end
 [~,I] = max(abs(C_orig));
