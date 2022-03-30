@@ -1,5 +1,6 @@
 
-addpath(genpath('C:\Users\Stuart\Desktop\ThalTractSeed_data\BrainSpace-master'))
+%addpath(genpath('C:\Users\Stuart\Desktop\ThalTractSeed_data\BrainSpace-master'))
+addpath(genpath('F:\Documents\ThalTractSeed\BrainSpace-master'))
 load('Seed_voxelData.mat')
 load('MNI_Seed_voxelData.mat')
 load('Sub76_ThalData.mat')
