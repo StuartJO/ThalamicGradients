@@ -8,6 +8,7 @@ for i = 1:size(MZ_ID,1)
            Output_MZ(i,j,1) = C_align(ID_IND,1); 
            Output_MZ(i,j,2) = abs(C_orig(1,ID_IND-1)); 
            Output_MZ(i,j,3) = abs(C_orig(2,ID_IND-1));
+           Output_MZ(i,j,4) = new_explained(ID_IND-1);
         end
     end
 end
@@ -21,6 +22,7 @@ for i = 1:size(DZ_ID,1)
            Output_DZ(i,j,1) = C_align(ID_IND,1); 
            Output_DZ(i,j,2) = abs(C_orig(1,ID_IND-1)); 
            Output_DZ(i,j,3) = abs(C_orig(2,ID_IND-1));
+           Output_DZ(i,j,4) = new_explained(ID_IND-1);
         end
     end
 end

@@ -30,6 +30,13 @@ all_scores = [score{3} sub_score];
 
 score_align = procrustes_alignment(sub_score,'reference',score{3});
 
+for i = 1:Ntwinsubs
+    d = diag(cov(score_align{i}));
+    new_explained(i) = d(1)/sum(d);
+    new_explained2(i) = d(3)/sum(d);
+end
+
+
 C_align = zeros(Ntwinsubs+1);
 
 C_align(1,1) = 1;
