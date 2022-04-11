@@ -28,7 +28,19 @@ end
 
 all_scores = [score{3} sub_score];
 
+score_align_tract = procrustes_alignment(sub_score,'reference',score{1});
+
 score_align = procrustes_alignment(sub_score,'reference',score{3});
+
+score_align_250 = procrustes_alignment(sub_score,'reference',score{3}(:,1:250));
+
+for i = 1:Ntwinsubs
+score_align_matlab{i} = rotatefactors(sub_score{i},'Method','procrustes','Target',score{3}(:,1:250),'Type','orthogonal');
+end
+
+for i = 1:Ntwinsubs
+score_align_matlab_obl{i} = rotatefactors(sub_score{i},'Method','procrustes','Target',score{3}(:,1:250));
+end
 
 for i = 1:Ntwinsubs
     d = diag(cov(score_align{i}));
