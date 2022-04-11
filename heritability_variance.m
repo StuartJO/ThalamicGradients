@@ -11,6 +11,8 @@ for i = 1:Ntwinsubs
     score_align_tract_explained(i) = d(1)/sum(d);
 end
 
+seed_mni_coords = seed_coords(logical(seed_ind))';
+
 for i = 1:Ntwinsubs
 for j = 1:3
 pc_thal = zscore(sub_score{i}(:,j));
@@ -60,6 +62,7 @@ end
 
 save('TwinAlignment_new.mat','Output_MZ','Output_DZ')
 
+figure
 for i = 1:9
    subplot(3,3,i)
    scatter(Output_DZ(:,1,i),Output_DZ(:,2,i),10,'b','filled')
@@ -78,6 +81,9 @@ hold on; % Set hold on so the next plot does not blow away the one we just drew.
 plot(xFit, yFit, 'b', 'LineWidth', 2); % Plot fitted line.
 grid on;
 
+DZ_pcorr = partialcorr(x,y,[DZ_sex(:,1) DZ_age(:,1)]);
+DZ_corr = corr(x,y);
+
    x = Output_MZ(:,1,i); y = Output_MZ(:,2,i);
    % Get coefficients of a line fit through the data.
 coefficients = polyfit(x, y, 1);
@@ -89,4 +95,13 @@ yFit = polyval(coefficients , xFit);
 hold on; % Set hold on so the next plot does not blow away the one we just drew.
 plot(xFit, yFit, 'r', 'LineWidth', 2); % Plot fitted line.
 grid on;
+
+MZ_pcorr = partialcorr(x,y,[MZ_sex(:,1) MZ_age(:,1)]);
+MZ_corr = corr(x,y);
+
+h(i) = 2*(MZ_corr-DZ_corr);
+h(i) = 2*(MZ_pcorr-DZ_pcorr);
+
+title(['h = ',num2str(round(h(i),3))])
+
 end
