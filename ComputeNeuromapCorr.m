@@ -26,6 +26,23 @@ for j = 1:6
     end
 end
 
+Import_receptor2tracer
+tracer=receptor2tracer_map(:,2);
+receptor=receptor2tracer_map(:,1);
+
+for i = 1:length(files)
+name = files(i).name;
+Underloc = strfind(name,'_');
+NeuroMapName = name(Underloc(1)+1:Underloc(2)-1);
+Index = find(contains(tracer,NeuroMapName));
+if ~isempty(Index)
+NeuroMapNames{i} = receptor{Index(1)};
+else
+    NeuroMapNames{i} = NeuroMapName;
+end
+end
+
+
 Chk = find(abs(C)>.4);
 for i = 1:length(Chk)
     subplot(3,5,i)
