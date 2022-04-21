@@ -33,34 +33,39 @@ data_type{5} = [data_type{1} data_type{2}(:,idx)];
 
 figure
 
-for j = 1:5
-[coeff{j},score{j},~,~,explained{j}] = pca(data_type{j});
+for PCtype = 1:5
+[coeff{PCtype},score{PCtype},~,~,explained{PCtype}] = pca(data_type{PCtype});
 end
 
-g = 1;
-j = 3;
-i = 1;
+grad = 1;
+PCtype = 3;
+
+for grad = [1 2]
+    for PCtype = [1 3]
+
+PCtypenames = {'tract','gene','joint'};
+XYZ = 1;
 
 load('MNI_Seed_voxelData.mat','seeds_vox','seed_coords')
 
 seed_voxel_coords = seeds_vox(logical(seed_ind),:);
 
-pc_thal = zscore(score{j}(:,g));
+pc_thal = zscore(score{PCtype}(:,grad));
     
 %PlotThalGradient2(pc_thal,seed_voxel_coords,turbo(256),[data_type_name{j},': PCA Gradient ',num2str(g)],2.1)
 cmap = turbo(256);
 %print(['./NewFigures/PCA_',data_type_savename{j},'_THAL_PC',num2str(g),'.png'],'-dpng','-r300')
-PlotThalGradient3(pc_thal,seed_voxel_coords,turbo(256),['Thalamic seed PC',num2str(g),' score'],2.1)
-print(['./NewFigures/Thalamus_PC1.png'],'-dpng','-r300')
+PlotThalGradient3(pc_thal,seed_voxel_coords,turbo(256),['Thalamic seed PC',num2str(grad),' score'],2.1)
+print(['./NewFigures/',PCtypenames{PCtype},'_Thalamus_PC',num2str(grad),'.png'],'-dpng','-r300')
 figure('Position',[162   233   713   592])
 seed_mni_coords = seed_coords(logical(seed_ind))';
 SPATIAL_DIR = {'Medial-Lateral','Anterior-posterior','Dorsal-ventral'};
-      pc_thal = zscore(score{j}(:,g));
-    s = scatter(seed_mni_coords(:,i),pc_thal,'filled','MarkerFaceAlpha',.25,'MarkerFaceColor',cmap(50,:));
-    [RHO,pval] = corr(seed_mni_coords(:,i),pc_thal,'Type','Spearman');
+      pc_thal = zscore(score{PCtype}(:,grad));
+    s = scatter(seed_mni_coords(:,XYZ),pc_thal,'filled','MarkerFaceAlpha',.25,'MarkerFaceColor',cmap(50,:));
+    [RHO,pval] = corr(seed_mni_coords(:,XYZ),pc_thal,'Type','Spearman');
     %title([SPATIAL_DIR{i},' ',data_type_name{j},' \rho = ',num2str(RHO)])
     xlabel({'Medial-lateral position','(MNI x-axis coordinate)'})
-    ylabel('Thalamic seed PC1 score')
+    ylabel(['Thalamic seed PC',num2str(grad),' score'])
     set(gca,'FontSize',24,'XDir','reverse')
     text(-0.5,1.5,['{\itr_{s}} = ',num2str(round(RHO,3))],'FontSize',24)
     pval_string = num2str(pval,3);
@@ -71,16 +76,15 @@ SPATIAL_DIR = {'Medial-Lateral','Anterior-posterior','Dorsal-ventral'};
     end
     pval_n = pval_string(find(pval_string=='e')+1:end);
     text(-0.5,1,['{\itp} = ',pval_m,'\times10^{',pval_n,'}'],'FontSize',24)
-    print(['./NewFigures/PC1_medlat_corr.png'],'-dpng','-r300')
+    print(['./NewFigures/',PCtypenames{PCtype},'_','PC',num2str(grad),'_medlat_corr.png'],'-dpng','-r300')
     
     
 load('fsaverage_surface_data.mat')
 surface.vertices = lh_inflated_verts;
 surface.faces = lh_faces;
 cmap = turbo(256);
-for i = 1
 
-pc = zscore(coeff{j}(1:250,i));
+pc = zscore(coeff{PCtype}(1:250,grad));
     
 figure('Position',[461   462   560   325])
 ax_sub1 = axes('Position',[0.005 .33 .49 .66]);
@@ -102,17 +106,16 @@ axis image
 
 c = colorbar('Location','southoutside');
 set(c, 'xlim', orig_data_climits,'Position',[.1 .23 .8 .05],'FontSize',20);
-c.Label.String = ['Cortical region PC',num2str(i),' loading'];
+c.Label.String = ['Cortical region PC',num2str(grad),' loading'];
 
-print(['./NewFigures/Cortical_PC',num2str(i),'.png'],'-dpng','-r300')
+print(['./NewFigures/Cortical_',PCtypenames{PCtype},'_','PC',num2str(grad),'.png'],'-dpng','-r300')
 
 end
+end
 
+for grad = 1
 
-
-for g = 1
-
-PC_gene_coeffs = coeff{3}(251:end,g);
+PC_gene_coeffs = coeff{3}(251:end,grad);
 
 [~,PC_gene_coeffs_sorted] = sort(PC_gene_coeffs,'descend');
 

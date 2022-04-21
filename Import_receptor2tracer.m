@@ -11,7 +11,7 @@ opts = spreadsheetImportOptions("NumVariables", 4);
 
 % Specify sheet and range
 opts.Sheet = "Sheet1";
-opts.DataRange = "A1:D39";
+opts.DataRange = "A1:D41";
 
 % Specify column names and types
 opts.VariableNames = ["HT1a", "cumi", "hc8", "beliveau"];
