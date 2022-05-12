@@ -40,7 +40,7 @@ p(i).FaceLighting = 'gouraud';
 material dull
 hold on
 
-boundary_plot.boundary(i) = plot3(BOUNDARY{i}(:,1), BOUNDARY{i}(:,2), BOUNDARY{i}(:,3), 'Color', 'k', 'LineWidth',2,'Clipping','off');
+boundary_plot.boundary(i) = plot3(BOUNDARY{i}(:,1), BOUNDARY{i}(:,2), BOUNDARY{i}(:,3), 'Color', 'k', 'LineWidth',4,'Clipping','off');
 end
 camlight(80,-10);
 camlight(-80,-10);
