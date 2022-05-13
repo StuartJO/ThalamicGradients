@@ -46,3 +46,33 @@ for i = 1:120
     ylim([ylinspace2(i) ylinspace(i)])
     pause(.1)
 end
+
+
+
+
+
+
+ pc_thal = zscore(score{3}(:,1));
+ 
+ imagesc(zscore(score{3}))
+ 
+ caxis([min(pc_thal) max(pc_thal)])
+ 
+ colormap(turbo(256))
+ 
+  imagesc(pc_thal)
+ colormap(turbo(256))
+ 
+ pc_cort_gene = zscore(coeff{3}(:,1));
+ 
+   imagesc(pc_cort_gene)
+ colormap(turbo(256))
+ 
+ 
+    imagesc(zscore(coeff{3}))
+ colormap(turbo(256))
+  caxis([min(pc_cort_gene) max(pc_cort_gene)])
+  
+  sum(ThalSeedAvg(:,1:250)>0,2);
+  
+  sum(ThalSeedAvg(:,1:250),2);

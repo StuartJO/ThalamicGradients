@@ -1,3 +1,5 @@
+
+figure('Position',[238 304 1920 1080])
 MNIsurface.vertices = lh_mni_vox;
 MNIsurface.faces = lh_faces;
 %pMNIsurface = plotSurfaceROIBoundary(MNIsurface,lh_rand500,1:250,'none',turbo(250),2);
@@ -10,6 +12,11 @@ material dull
 camlight(80,-10);
 camlight(-80,-10);
 view([90 0])
+
+axis off
+axis tight
+axis equal
+axis vis3d
 
 hold on
 
@@ -25,102 +32,166 @@ material dull
 xlimits = xlim;
 ylimits = ylim;
 zlimits = zlim;
+alphavals = linspace(1,.025,30);
+for i = 1:30
+pMNIsurface.FaceAlpha = alphavals(i);
+print(['./GIF/PP1_S1_',num2str(i),'.png'],'-dpng')
+end
 
-end_xlimits = [133.3504  143.8468];
-end_ylimits = [133.2143  162.0909];
-end_zlimits = [81.6514  100.4335];
 
-%axis off
-axis tight
-axis equal
-axis vis3d
+
+tracks = read_mrtrix_tracks ('combined_tracts_reduced_MNI.tck');
+
+for i = 1:20000
+tracts_MNI{i} = MNI_mm2vox(tracks.data{i},'mm');
+
+%inside = PointInsideVolume(tracts_MNI{i}, lh_faces, lh_mni_vox);
+
+end
+
+for i = 1:20000%length(OK_STREAMLINES)
+    S = tracts_MNI{i};
+    
+    if size(S,1) > 1
+    
+    [~,SDIR] = max(sum(abs(diff(S))));    
+    
+    if SDIR == 1
+        SCOL = [1 0 0 .2];
+        col = 'r';
+    elseif SDIR == 2
+        SCOL = [0 1 0 .2];
+        col = 'g';
+    else
+        SCOL = 	[0 0 1 .2];
+        col = 'b';
+    end
+    
+    
+    x = S(:,1);
+    y = S(:,2); 
+    z = S(:,3); 
+
+    %handles.handle_plotCD(i) = plot3(x,y,z,'LineWidth',1,'Color',SCOL,'Clipping','off');
+    %handles.handle_plotCD(i) = plot3t(x,y,z,.5,col);
+    StepRate = 1;
+
+    handles.handle_plotCD(i) = patch([S(:,1)' NaN],[S(:,2)' NaN],[S(:,3)' NaN],0); 
+    joint = ([S(2:end,:); NaN NaN NaN]-S);
+    joint(end,:) = joint(end-1,:);
+    temp_joint = joint;
+    joint(:,1) = temp_joint(:,1);
+    joint(:,2) = temp_joint(:,2);
+    cdata = [abs(joint./StepRate); NaN NaN NaN];
+    cdata = reshape(cdata,length(cdata),1,3);
+    set(handles.handle_plotCD(i),'CData', cdata, 'EdgeColor','interp','FaceColor','interp','Clipping','off') 
+    
+    hold on
+    
+    end
+end
+
+xlim(xlimits);
+ylim(ylimits);
+zlim(zlimits);
+
+print(['./GIF/PP1_S2.png'],'-dpng')
+
+delete(handles.handle_plotCD)
+
+end_xlimits = [133.3088  143.8052];
+end_ylimits = [133.1712  162.0478];
+end_zlimits = [81.3852  105.1673];
+
+
 t= 60;
 views = [linspace(90,136,t)' linspace(0,13,t)'];
-alphavals = linspace(1,.025,60);
+thal_alphavals = linspace(1,.025,t);
 xlimits_range = [linspace(xlimits(1),end_xlimits(1),t)' linspace(xlimits(2),end_xlimits(2),t)'];
 ylimits_range = [linspace(ylimits(1),end_ylimits(1),t)' linspace(ylimits(2),end_ylimits(2),t)'];
 zlimits_range = [linspace(zlimits(1),end_zlimits(1),t)' linspace(zlimits(2),end_zlimits(2),t)'];
 for i = 1:t
-    pMNIsurface.FaceAlpha = alphavals(i);
+    pThalsurf.FaceAlpha = 1;
     view(views(i,:))
     xlim(xlimits_range(i,:));
     ylim(ylimits_range(i,:));
     zlim(zlimits_range(i,:));
     pause(.1)
+    print(['./GIF/PP1_S3_',num2str(i),'.png'],'-dpng')
 end
 
-pThalsurf.FaceAlpha = .025;
 
-sSeeds = scatter3(seed_voxel_coords(:,1),seed_voxel_coords(:,2),seed_voxel_coords(:,3),60,'filled','k');
+delete(pThalsurf)
 
-% sSeeds = scatter3(seed_voxel_coords(:,1),seed_voxel_coords(:,2),seed_voxel_coords(:,3),60,pc_thal,'filled');
-sSeeds.Clipping='off';
-% sSeeds.SizeData=60;
-% colormap(turbo(256))
+[~,ThalTianParc] = read_nifti('TianS4_LeftThal.nii');
+[I1,I2,I3] = ind2sub(size(ThalTianParc),find(ThalTianParc~=0));
+ThalVerts = round(Thalsurf.vertices);
+ThalTianParcParcID=ThalTianParc(find(ThalTianParc~=0));
+[~,ThalVerts_parcvoxIND] = min(pdist2(ThalVerts,[I1,I2,I3]),[],2);
+ThalVertID = ThalTianParcParcID(ThalVerts_parcvoxIND);
 
-ax = gca;
-origin = sum([get(ax,'xlim')' get(ax,'ylim')' get(ax,'zlim')'])/2;
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'midpoint',turbo(8),10);
 
-pc_line_coords_start = [ones(921,1)*142 ones(921,1)*145 linspace(100,80,921)'];
-pc_line_coords_end = [ones(921,1)*142 ones(921,1)*155 linspace(100,80,921)'];
+print(['./GIF/PP1_S4.png'],'-dpng')
 
-pc_line_coords_start_rot = rotate_coords(pc_line_coords_start,views(end,:),1,origin);
-pc_line_coords_end_rot = rotate_coords(pc_line_coords_end,views(end,:),1,origin);
+delete(thalpatch)
+delete(thalpatchboundary.boundary)
 
-cmap = turbo(256);
+[~,ThalFSLParc] = read_nifti('striatum6ANDthalamus14_config.nii');
+[I1,I2,I3] = ind2sub(size(ThalFSLParc),find(ThalFSLParc>3));
+ThalVerts = round(Thalsurf.vertices);
+ThalFSLParcParcID=ThalFSLParc(find(ThalFSLParc>3));
+[~,ThalVerts_parcvoxIND] = min(pdist2(ThalVerts,[I1,I2,I3]),[],2);
+ThalVertID = ThalFSLParcParcID(ThalVerts_parcvoxIND);
 
- pc_thal_colors_ind = ceil(rescale(pc_thal,1,size(cmap,1)));
- pc_thal_colors_ind(isnan(pc_thal)) = 1;
- pc_thal_colors = cmap(pc_thal_colors_ind,:);
-for i = 1:921
-    x = [pc_line_coords_start(i,1) pc_line_coords_end(i,1)];
-    y = [pc_line_coords_start(i,2) pc_line_coords_end(i,2)];
-    z = [pc_line_coords_start(i,3) pc_line_coords_end(i,3)];
-    l_score(i) = plot3(x,y,z,'Color',pc_thal_colors(i,:)); 
-    l_score(i).Clipping = 'off';
-    hold on
-end
-view(views(end,:))
-% ylim(ylimits)
-% zlim(zlimits)
-% axis tight
-for i = 1:921
-% direction = [0 0 1];
-% rotate(l_score(i),direction,46)
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'midpoint',lines(20),10);
 
-direction = [0 -1 0];
-rotate(l_score(i),direction,-13)
-end
+print(['./GIF/PP1_S5.png'],'-dpng')
 
-    view(views(end,:))
-    xlim(xlimits_range(end,:));
-    ylim(ylimits_range(end,:));
-    zlim(zlimits_range(end,:));
-    axis tight
-axis equal
-axis vis3d
-   hold on 
-pc_patch_coords_start = [ones(922,1)*142 ones(922,1)*145 linspace(100,80,922)'];
-pc_patch_coords_end = [ones(922,1)*142 ones(922,1)*155 linspace(100,80,922)'];
-for i = 1:921
-x = [142 142 142 142];
-y = [145 145 155 155];
-z = [pc_patch_coords_start(i,3) pc_patch_coords_start(i+1,3) pc_patch_coords_start(i+1,3) pc_patch_coords_start(i,3)]; 
-f = [1 2 3 4];
-v = [x(1) y(1) z(1);x(2) y(2) z(2);x(3) y(3) z(3);x(4) y(4) z(4)];
+delete(thalpatch)
+delete(thalpatchboundary.boundary)
 
-pc_patches(i) = patch('Faces',f,'Vertices',v,'FaceColor',pc_thal_colors(i,:),'Clipping','off','EdgeColor','none');
-end
-for i = 1:921
-direction = [0 0 1];
-rotate(pc_patches(i),direction,46)
+[~,ThalMorelParc] = read_nifti('morel_lh.nii');
+ThalMorelParcParcID=ThalMorelParc(find(ThalMorelParc~=0));
 
-% direction = [1 0 0];
-% rotate(pc_patches(i),direction,13)
-end
+ThalMorelParcParcID_unique = unique(ThalMorelParcParcID);
+counts = histc(ThalMorelParcParcID(:), ThalMorelParcParcID_unique);
 
-for i = 1:921
+Parcs2Use = ThalMorelParcParcID_unique(counts>100);
 
-direction = [1 0 0];
-rotate(pc_patches(i),direction,-13)
+ThalMorelParcParcID2=ThalMorelParc(find(ismember(ThalMorelParc,Parcs2Use)));
+[I1,I2,I3] = ind2sub(size(ThalMorelParc),find(ismember(ThalMorelParc,Parcs2Use)));
+ThalVerts = round(Thalsurf.vertices);
+
+
+[~,ThalVerts_parcvoxIND] = min(pdist2(ThalVerts,[I1,I2,I3]),[],2);
+ThalVertID = ThalMorelParcParcID2(ThalVerts_parcvoxIND);
+ThalVertIDNew = changem(ThalVertID,unique(ThalVertID),1:length(unique(ThalVertID)));
+
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertIDNew,ThalVertIDNew,'midpoint',lines(7),10);
+
+print(['./GIF/PP1_S6.png'],'-dpng')
+
+fc1 = gifti('hcp.embed.grad_1.L.fsa.func.gii');
+fc1_data = fc1.cdata;
+
+FaceVertexCData = makeFaceVertexCData(MNIsurface.vertices,MNIsurface.faces,lh_rand500,fc1_data,viridisplus(256));
+
+r = linspace(0,1,60);
+
+FaceVertexCData_gray = FaceVertexCData;
+FaceVertexCData_gray(:) = .5;
+alphavals = linspace(.025,1,60);
+
+for i = 1:60
+NewFaceColors = find_point_on_line(FaceVertexCData_gray,FaceVertexCData,r(i));
+    view(views(61-i,:))
+    xlim(xlimits_range(61-i,:));
+    ylim(ylimits_range(61-i,:));
+    zlim(zlimits_range(61-i,:));
+    pMNIsurface.FaceAlpha = alphavals(i);
+    pMNIsurface.FaceVertexCData = NewFaceColors;
+    pMNIsurface.FaceColor='interp';
+    pause(.1)
+    print(['./GIF/PP1_S7_',num2str(i),'.png'],'-dpng')
 end
