@@ -81,6 +81,7 @@ pThalsurf.FaceAlpha=.025;
 sphere_mesh = surf2patch(x,y,z,'triangles');
 load('MNI_Seed_voxelData.mat')
 seed_voxel_coords = seeds_vox(logical(seed_ind),:);
+
 for i = 1:921
     sphere_mesh_roi = sphere_mesh;
     sphere_mesh_roi.vertices = (sphere_mesh.vertices.*.15) + seed_voxel_coords(i,:);
@@ -210,3 +211,12 @@ for i = 1:5000%length(OK_STREAMLINES)
     
     end
 end
+
+
+
+
+ax1 = gca;
+
+P = get(ax1,'pos');
+axes_mat = axes('Position',P);
+set(axes_mat,'color','none')
