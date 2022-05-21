@@ -148,7 +148,7 @@ newCmap = [gray(256); turbo(256)];
 
 newslicevals1 = rescale(brain_slice,1,256);
 
-newslicevals1(find(~isnan(newslicevals2))) = thalslice(find(~isnan(newslicevals2)));
+newslicevals1(find(~isnan(thalslice))) = thalslice(find(~isnan(thalslice)));
 
 colormap(newCmap)
 slicesurf.CData=newslicevals1;

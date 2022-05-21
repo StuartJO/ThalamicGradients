@@ -31,11 +31,13 @@ data_type{4} = data_type{2}(:,idx);
 data_type{5} = [data_type{1} data_type{2}(:,idx)];
 
 
-figure
+
 
 for PCtype = 1:5
 [coeff{PCtype},score{PCtype},~,~,explained{PCtype}] = pca(data_type{PCtype});
 end
+
+figure
 
 grad = 1;
 PCtype = 3;

@@ -598,16 +598,23 @@ switch boundary_method
             end
                   
             end
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
 
             case 'edge_faces'
             % Honestly this is so janky if it gives weird results use
             % any of the other options
                 
         
+=======
+            
+    case 'MATLAB-edges'
+
+>>>>>>> Stashed changes:findROIboundaries.m
             % Find the rois each face is connected to
 
             faces_roi_ids = vertex_id(faces);
             
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
             % Get the colouring (i.e., the ROI id) of the face. MATLAB
             % colours faces according to the value of the vertex in the
             % first column.
@@ -676,6 +683,34 @@ switch boundary_method
             BOUNDARY_EDGES_unique_ROIS = face_roi_id(BOUNDARY_EDGES_unique_sameColor_faceID(:,4:5));
 
             % Get the number of unique ROIs
+=======
+            % Find the faces that are boundary faces
+
+            bfaces_ind = find(logical(diff(faces_roi_ids,2,2)));
+            
+            bfaces = faces(bfaces_ind,:);
+            bfacesID = 1:size(bfaces,1);
+            % Find all possible combinations of edges that make up the
+            % boundaries of ROIs
+            
+            BoundaryEdges = [[bfaces(:,1); bfaces(:,1); bfaces(:,2); bfaces(:,2); bfaces(:,3); bfaces(:,3)], ...
+                [bfaces(:,3); bfaces(:,2); bfaces(:,1); bfaces(:,3); bfaces(:,2); bfaces(:,1)]];
+
+            BoundaryEdgesFaceID = repmat(bfacesID',6,1);
+            
+            % Get the unique edges making up the boundary of each roi
+            
+            [EDGES_sorted,EDGES_sorted_IND] = sortrows(sort(BoundaryEdges,2));
+            
+            [unique_boundary_edges,unique_boundary_edges_IND] = unique(EDGES_sorted,'rows');
+            
+            unique_boundary_edges_rois = vertex_id(unique_boundary_edges);
+            
+            unique_boundary_edges_face_id = bfaces_ind(BoundaryEdgesFaceID(EDGES_sorted_IND(unique_boundary_edges_IND)));
+            
+            % Get the number of unique ROIs
+            
+>>>>>>> Stashed changes:findROIboundaries.m
             roi_ids = unique(vertex_id);
             nrois = length(roi_ids);
             
@@ -690,14 +725,22 @@ switch boundary_method
                 % Find the edges that connected two vertices of the same
                 % ROI.
                 
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 roiID = roi_ids(i);
                 
                 index = sum(BOUNDARY_EDGES_unique_ROIS == roiID,2)>=1;
+=======
+                index = sum(unique_boundary_edges_rois == roi_ids(i),2)==2;
+>>>>>>> Stashed changes:findROIboundaries.m
                 
                 % Make an edge list of unique boundary edges for the
                 % desired ROI
                 
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 edgeList_half = BOUNDARY_EDGES_unique_sameColor_faceID(index,1:2);
+=======
+                edgeList_half = unique_boundary_edges(index,:);
+>>>>>>> Stashed changes:findROIboundaries.m
                 
                 edgeList_orig = [edgeList_half; fliplr(edgeList_half)];
                 
@@ -713,8 +756,11 @@ switch boundary_method
                 new_vert_id = 1:nverts;
                 old_vert_id = unique_verts;
                 
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 vert_new2old = [(1:nverts)' unique_verts];
                 
+=======
+>>>>>>> Stashed changes:findROIboundaries.m
                 edgeList = edgeList_orig;
 
                 for k = 1:numel(new_vert_id)
@@ -729,7 +775,11 @@ switch boundary_method
                 % original surface mesh
                                 
                 adj = sparse(edgeList(:, 1), edgeList(:, 2), 1, nverts, nverts);
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                                 
+=======
+                
+>>>>>>> Stashed changes:findROIboundaries.m
             % Find the components of the adjacency matrix. Each component
             % represents a spatially continuous area for the current roi
 
@@ -744,11 +794,18 @@ switch boundary_method
 
             for j = 1:ROI_COMPONENTS(i)
 
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 % Find the "nodes" making up the component. Nodes in this
                 % case are the vertices of the surface
                 NodesInComp = find(comp == j);
                 Nodes2Use = find((comp == j).*NodesWithDeg2);
                                     
+=======
+                % Find the "nodes" making up the component
+
+                Nodes2Use = find((comp == j).*NodesWithDeg2);
+
+>>>>>>> Stashed changes:findROIboundaries.m
                 % Define a start "node"
                 
                 N1 = Nodes2Use(1);
@@ -776,6 +833,7 @@ switch boundary_method
                 G = graph(adj);
 
                 TR = shortestpathtree(G,N1,N2,'OutputForm','cell');
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 attempts = 0;
                 
                 % Remember when I said it gets janky? So it begins....
@@ -986,15 +1044,42 @@ switch boundary_method
 
                 for k = 1:size(vert_new2old,1)
                     boundary_verts(cycle == vert_new2old(k,1)) = vert_new2old(k,2);
+=======
+                %save('error.mat')
+                cycle = [TR{1} TR{1}(1)];
+
+                % Insert the original vertex IDs, then extract the coordinates
+                % of those IDs. This is the boundary of this component of
+                % the ROI
+
+                new_vert_id = 1:nverts;
+                old_vert_id = unique_verts;
+
+                boundary_verts = cycle;
+
+                for k = 1:numel(new_vert_id)
+                    boundary_verts(cycle == new_vert_id(k)) = old_vert_id(k);
+>>>>>>> Stashed changes:findROIboundaries.m
                 end
 
                 BOUNDARY{nBounds} = vertices(boundary_verts,:);
 
+<<<<<<< Updated upstream:OldplotSurfaceROIBoundary/findROIboundaries.m
                 BOUNDARY_ROI_ID(nBounds) = roiID;
 
                 nBounds = nBounds + 1;   
                 end
             end
+=======
+                BOUNDARY_ROI_ID(nBounds) = i;
+
+                nBounds = nBounds + 1;   
+            end
+                  
+            end
+                  
+    
+>>>>>>> Stashed changes:findROIboundaries.m
     otherwise
         error('Unrecognised ''boundary_method'' option')
 end

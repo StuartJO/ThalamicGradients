@@ -1,10 +1,10 @@
 
 
-
+addpath C:\Users\Stuart\Documents\plotSurfaceROIBoundary
 
 surface.vertices = lh_inflated_verts;
 surface.faces = lh_faces;
-plotSurfaceROIBoundary(surface,lh_rand500,1:250,'midpoint',turbo(250),1,2);
+plotSurfaceROIBoundary(surface,lh_rand500,1:250,'midpoint',turbo(250),2);
 
 % The following options set up the patch object to look pretty. This works
 % well for the left hemisphere (medial and lateral). Change the inputs to 

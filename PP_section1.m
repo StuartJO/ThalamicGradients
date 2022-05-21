@@ -1,5 +1,15 @@
+load('Sub76_ThalData.mat')
 
-figure('Position',[238 304 1920 1080])
+load('fsaverage_surface_data.mat')
+load('lh.avgMapping_allSub_RF_ANTs_MNI152_orig_to_fsaverage.mat');
+lh_mni_vox = MNI_mm2vox(ras','mm');
+load('rh.avgMapping_allSub_RF_ANTs_MNI152_orig_to_fsaverage.mat');
+rh_mni_vox = MNI_mm2vox(ras','mm');
+MNIsurface.vertices = lh_mni_vox;
+MNIsurface.faces = lh_faces;
+
+
+figure('Position',[0 0 1920 1080])
 MNIsurface.vertices = lh_mni_vox;
 MNIsurface.faces = lh_faces;
 %pMNIsurface = plotSurfaceROIBoundary(MNIsurface,lh_rand500,1:250,'none',turbo(250),2);
@@ -21,8 +31,11 @@ axis vis3d
 hold on
 
 TR = stlread('LeftThalMeshSmoothManual.stl');
-Thalsurf.faces = TR.ConnectivityList;
-Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
+% Thalsurf.faces = TR.ConnectivityList;
+% Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
+Thalsurf.faces = TR.faces;
+Thalsurf.vertices = MNI_mm2vox(TR.vertices,'mm');
+
 
 pThalsurf = patch(Thalsurf);
 set(pThalsurf,'EdgeColor','none','FaceColor',[1 .647 0],'Clipping','off');
@@ -42,53 +55,66 @@ end
 
 tracks = read_mrtrix_tracks ('combined_tracts_reduced_MNI.tck');
 
-for i = 1:20000
+for i = 1:length(tracks.data)
 tracts_MNI{i} = MNI_mm2vox(tracks.data{i},'mm');
 
 %inside = PointInsideVolume(tracts_MNI{i}, lh_faces, lh_mni_vox);
 
 end
-
-for i = 1:20000%length(OK_STREAMLINES)
-    S = tracts_MNI{i};
-    
-    if size(S,1) > 1
-    
-    [~,SDIR] = max(sum(abs(diff(S))));    
-    
-    if SDIR == 1
-        SCOL = [1 0 0 .2];
-        col = 'r';
-    elseif SDIR == 2
-        SCOL = [0 1 0 .2];
-        col = 'g';
-    else
-        SCOL = 	[0 0 1 .2];
-        col = 'b';
+t = 60;
+for j = 1:t
+    if exist('streamline_handle','var')
+    delete(streamline_handle)
     end
-    
-    
-    x = S(:,1);
-    y = S(:,2); 
-    z = S(:,3); 
+    for i = 1:length(tracts_MNI)
+        s = tracts_MNI{i};
+        streamline_length = size(s,1);
 
-    %handles.handle_plotCD(i) = plot3(x,y,z,'LineWidth',1,'Color',SCOL,'Clipping','off');
-    %handles.handle_plotCD(i) = plot3t(x,y,z,.5,col);
-    StepRate = 1;
+        Sr = round(find_point_on_line(1,streamline_length,j/60));
+        
+        S = s(1:Sr,:);
+        
+        if size(S,1) > 1
 
-    handles.handle_plotCD(i) = patch([S(:,1)' NaN],[S(:,2)' NaN],[S(:,3)' NaN],0); 
-    joint = ([S(2:end,:); NaN NaN NaN]-S);
-    joint(end,:) = joint(end-1,:);
-    temp_joint = joint;
-    joint(:,1) = temp_joint(:,1);
-    joint(:,2) = temp_joint(:,2);
-    cdata = [abs(joint./StepRate); NaN NaN NaN];
-    cdata = reshape(cdata,length(cdata),1,3);
-    set(handles.handle_plotCD(i),'CData', cdata, 'EdgeColor','interp','FaceColor','interp','Clipping','off') 
-    
-    hold on
-    
+        [~,SDIR] = max(sum(abs(diff(S))));    
+
+        if SDIR == 1
+            SCOL = [1 0 0 .2];
+            col = 'r';
+        elseif SDIR == 2
+            SCOL = [0 1 0 .2];
+            col = 'g';
+        else
+            SCOL = 	[0 0 1 .2];
+            col = 'b';
+        end
+
+
+%         x = S(:,1);
+%         y = S(:,2); 
+%         z = S(:,3); 
+
+        %handles.handle_plotCD(i) = plot3(x,y,z,'LineWidth',1,'Color',SCOL,'Clipping','off');
+        %handles.handle_plotCD(i) = plot3t(x,y,z,.5,col);
+        StepRate = 1;
+
+        streamline_handle(i) = patch([S(:,1)' NaN],[S(:,2)' NaN],[S(:,3)' NaN],0); 
+        joint = ([S(2:end,:); NaN NaN NaN]-S);
+        joint(end,:) = joint(end-1,:);
+        temp_joint = joint;
+        joint(:,1) = temp_joint(:,1);
+        joint(:,2) = temp_joint(:,2);
+        cdata = [abs(joint./StepRate); NaN NaN NaN];
+        cdata = reshape(cdata,length(cdata),1,3);
+        set(streamline_handle(i),'CData', cdata, 'EdgeColor','interp','FaceColor','interp','Clipping','off') 
+
+        hold on
+
+        end
     end
+
+    pause(.1)
+    print(['./GIF/PP1_S2_',num2str(j),'.png'],'-dpng')
 end
 
 xlim(xlimits);
@@ -97,7 +123,7 @@ zlim(zlimits);
 
 print(['./GIF/PP1_S2.png'],'-dpng')
 
-delete(handles.handle_plotCD)
+delete(streamline_handle)
 
 end_xlimits = [133.3088  143.8052];
 end_ylimits = [133.1712  162.0478];
@@ -130,7 +156,7 @@ ThalTianParcParcID=ThalTianParc(find(ThalTianParc~=0));
 [~,ThalVerts_parcvoxIND] = min(pdist2(ThalVerts,[I1,I2,I3]),[],2);
 ThalVertID = ThalTianParcParcID(ThalVerts_parcvoxIND);
 
-[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'midpoint',turbo(8),10);
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'faces',turbo(8),10);
 
 print(['./GIF/PP1_S4.png'],'-dpng')
 
@@ -144,7 +170,7 @@ ThalFSLParcParcID=ThalFSLParc(find(ThalFSLParc>3));
 [~,ThalVerts_parcvoxIND] = min(pdist2(ThalVerts,[I1,I2,I3]),[],2);
 ThalVertID = ThalFSLParcParcID(ThalVerts_parcvoxIND);
 
-[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'midpoint',lines(20),10);
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertID,ThalVertID,'faces',lines(20),10);
 
 print(['./GIF/PP1_S5.png'],'-dpng')
 
@@ -168,7 +194,7 @@ ThalVerts = round(Thalsurf.vertices);
 ThalVertID = ThalMorelParcParcID2(ThalVerts_parcvoxIND);
 ThalVertIDNew = changem(ThalVertID,unique(ThalVertID),1:length(unique(ThalVertID)));
 
-[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertIDNew,ThalVertIDNew,'midpoint',lines(7),10);
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertIDNew,ThalVertIDNew,'faces',turbo(7),10);
 
 print(['./GIF/PP1_S6.png'],'-dpng')
 
