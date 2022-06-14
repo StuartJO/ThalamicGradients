@@ -30,12 +30,17 @@ axis vis3d
 
 hold on
 
-TR = stlread('LeftThalMeshSmoothManual.stl');
-% Thalsurf.faces = TR.ConnectivityList;
-% Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
-Thalsurf.faces = TR.faces;
-Thalsurf.vertices = MNI_mm2vox(TR.vertices,'mm');
+%TR = stlread_('LeftThalMeshSmoothManual.stl');
 
+TR = stlread('LeftThalMeshSmoothManual.stl');
+
+Thalsurf.faces = TR.ConnectivityList;
+Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
+
+% [v1, f1] = subdivide_tri(TR.Points, TR.ConnectivityList);
+
+% Thalsurf.faces = f1;
+% Thalsurf.vertices = MNI_mm2vox(v1,'mm');
 
 pThalsurf = patch(Thalsurf);
 set(pThalsurf,'EdgeColor','none','FaceColor',[1 .647 0],'Clipping','off');
@@ -53,7 +58,8 @@ end
 
 
 
-tracks = read_mrtrix_tracks ('combined_tracts_reduced_MNI.tck');
+%tracks = read_mrtrix_tracks ('combined_tracts_reduced_MNI.tck');
+tracks = read_mrtrix_tracks ('192035inMNI_RAND_THAL_TRACTS2.tck');
 
 for i = 1:length(tracks.data)
 tracts_MNI{i} = MNI_mm2vox(tracks.data{i},'mm');
@@ -112,14 +118,14 @@ for j = 1:t
 
         end
     end
-
+xlim(xlimits);
+ylim(ylimits);
+zlim(zlimits);
     pause(.1)
     print(['./GIF/PP1_S2_',num2str(j),'.png'],'-dpng')
 end
 
-xlim(xlimits);
-ylim(ylimits);
-zlim(zlimits);
+
 
 print(['./GIF/PP1_S2.png'],'-dpng')
 
@@ -161,7 +167,7 @@ ThalVertID = ThalTianParcParcID(ThalVerts_parcvoxIND);
 print(['./GIF/PP1_S4.png'],'-dpng')
 
 delete(thalpatch)
-delete(thalpatchboundary.boundary)
+%delete(thalpatchboundary.boundary)
 
 [~,ThalFSLParc] = read_nifti('striatum6ANDthalamus14_config.nii');
 [I1,I2,I3] = ind2sub(size(ThalFSLParc),find(ThalFSLParc>3));
@@ -175,7 +181,7 @@ ThalVertID = ThalFSLParcParcID(ThalVerts_parcvoxIND);
 print(['./GIF/PP1_S5.png'],'-dpng')
 
 delete(thalpatch)
-delete(thalpatchboundary.boundary)
+%delete(thalpatchboundary.boundary)
 
 [~,ThalMorelParc] = read_nifti('morel_lh.nii');
 ThalMorelParcParcID=ThalMorelParc(find(ThalMorelParc~=0));
@@ -183,7 +189,7 @@ ThalMorelParcParcID=ThalMorelParc(find(ThalMorelParc~=0));
 ThalMorelParcParcID_unique = unique(ThalMorelParcParcID);
 counts = histc(ThalMorelParcParcID(:), ThalMorelParcParcID_unique);
 
-Parcs2Use = ThalMorelParcParcID_unique(counts>100);
+Parcs2Use = ThalMorelParcParcID_unique(counts>150);
 
 ThalMorelParcParcID2=ThalMorelParc(find(ismember(ThalMorelParc,Parcs2Use)));
 [I1,I2,I3] = ind2sub(size(ThalMorelParc),find(ismember(ThalMorelParc,Parcs2Use)));
@@ -194,7 +200,7 @@ ThalVerts = round(Thalsurf.vertices);
 ThalVertID = ThalMorelParcParcID2(ThalVerts_parcvoxIND);
 ThalVertIDNew = changem(ThalVertID,unique(ThalVertID),1:length(unique(ThalVertID)));
 
-[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertIDNew,ThalVertIDNew,'faces',turbo(7),10);
+[thalpatch,thalpatchboundary] = plotSurfaceROIBoundary(Thalsurf,ThalVertIDNew,ThalVertIDNew,'midpoint',lines(20),10);
 
 print(['./GIF/PP1_S6.png'],'-dpng')
 

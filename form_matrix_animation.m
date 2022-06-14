@@ -60,13 +60,10 @@ end
  
  colormap(turbo(256))
  
-  imagesc(pc_thal)
+  imagesc(sort(pc_thal))
  colormap(turbo(256))
  
  pc_cort_gene = zscore(coeff{3}(:,1));
- 
-   imagesc(pc_cort_gene)
- colormap(turbo(256))
  
  
     imagesc(zscore(coeff{3}))
@@ -76,3 +73,72 @@ end
   sum(ThalSeedAvg(:,1:250)>0,2);
   
   sum(ThalSeedAvg(:,1:250),2);
+  
+ pc_thal = zscore(score{3}(:,1));  
+imagesc(score{3}(1:20,1:5))
+colormap(turbo(256))
+
+
+pc_cort_loadings = zscore(coeff{3}(1:250,1));
+
+imagesc(pc_cort_loadings(1:250))
+colormap(turbo(256))
+axis off
+exportgraphics(gcf,'HIGHRES_PC1_cort_loadings.png','Resolution',300)
+
+pc_gene_loadings = zscore(coeff{3}(251:end,1));
+
+imagesc(pc_gene_loadings)
+colormap(turbo(256))
+axis off
+exportgraphics(gcf,'HIGHRES_PC1_gene_loadings.png','Resolution',300)
+
+
+pc_thal = zscore(score{3}(:,1));  
+zscore_scores = zscore(score{3});
+imagesc(zscore_scores(randi(921,1,20),1:20))
+colormap(turbo(256))
+caxis([min(pc_thal) max(pc_thal)])
+axis square
+yticks(1:20)
+xticks(1:20)
+set(gca,'XAxisLocation', 'top','TickLength',[0 0])
+for i = 1:20
+   x_ticklabels{i} = ['PC',num2str(i)]; 
+   y_ticklabels{i} = ['Seed ',num2str(i)]; 
+end
+yticklabels(y_ticklabels)
+xticklabels(x_ticklabels)
+xtickangle(45)
+set(gca,'FontSize',20)
+print('./ScoreMatZoom.png','-dpng','-r300')
+
+
+
+ pc_cort_gene = zscore(coeff{3});
+ 
+pc_thal = zscore(score{3}(:,1));  
+zscore_scores = zscore(score{3});
+%imagesc(zscore_scores(randi(921,1,20),1:20))
+imagesc(pc_cort_gene(1:300,1:100))
+colormap(turbo(256))
+caxis([min(pc_cort_gene(:,1)) max(pc_cort_gene(:,1))])
+axis image
+yticks(1:300)
+xticks(1:100)
+set(gca,'XAxisLocation', 'top','TickLength',[0 0])
+for i = 1:300
+  x_ticklabels{i} = ['PC',num2str(i)]; 
+   if i <=250
+   y_ticklabels{i} = ['ROI ',num2str(i)]; 
+   else
+     y_ticklabels{i} = ['Gene ',num2str(i-250)];   
+   end
+end
+yticklabels(y_ticklabels)
+xticklabels(x_ticklabels(1:100))
+xtickangle(45)
+set(gca,'FontSize',2)
+print('./CoeffMatZoom.png','-dpng','-r1200')
+
+

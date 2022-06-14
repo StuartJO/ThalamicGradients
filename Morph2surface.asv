@@ -1,0 +1,120 @@
+figure('Position',[0 0 1920 1080])
+
+axes('Position',[0.0177 0.0241 0.9698 0.9657])
+
+load('IT.mat')
+IT_colormap = cbrewer('div','RdBu',256);
+
+IT_color_ind = ceil(rescale(IT,1,size(IT_colormap,1)));
+IT_color = IT_colormap(IT_color_ind,:);
+IT_color = [.5 .5 .5; IT_color];
+
+ PC1_color = turbo(256);
+ PC1_cort_color = value2color(zscore(coeff{3}(1:250,1)),PC1_color);
+ PC1_cort_color = [.5 .5 .5; PC1_cort_color];
+
+%plotSurfaceROIBoundary(surface,lh_rand500,IT,'midpoint',IT_colormap,2);
+lh_inflated_verts_med = lh_inflated_verts;
+
+theta=3;
+lh_inflated_verts_med(:,1) = lh_inflated_verts(:,1)*cos(theta) - lh_inflated_verts(:,2)*sin(theta);
+lh_inflated_verts_med(:,2) = lh_inflated_verts(:,1)*sin(theta) + lh_inflated_verts(:,2)*cos(theta) - 220;
+lh_inflated_verts_med(:,3) = lh_inflated_verts(:,3);
+
+BOUNDARY = findROIboundaries(lh_inflated_verts,lh_faces,lh_rand500,'midpoint');
+
+
+
+for i = 1:251
+hold on
+pIT(i)=fill3(BOUNDARY{i}(:,1),BOUNDARY{i}(:,2),BOUNDARY{i}(:,3),[.5 .5 .5],'FaceLighting','gouraud','LineWidth',2,'Clipping','off');
+material dull
+
+end
+
+BOUNDARY2 = findROIboundaries(lh_inflated_verts_med,lh_faces,lh_rand500,'midpoint');
+for i = 1:251
+hold on
+pIT2(i)=fill3(BOUNDARY2{i}(:,1),BOUNDARY2{i}(:,2),BOUNDARY2{i}(:,3),[.5 .5 .5],'FaceLighting','gouraud','LineWidth',2,'Clipping','off');
+material dull
+
+end
+
+% camlight(80,-10);
+% camlight(-80,-10);
+view([-90 0])
+% axis off
+axis image
+
+% 
+% 
+% 
+%  PC1_color = turbo(256);
+%  PC1_cort_color = value2color(zscore(coeff{3}(1:250,1)),PC1_color);
+%  
+%  PC1_cort_color = [.5 .5 .5; PC1_cort_color];
+%  
+%  for i = 1:251
+% hold on
+% pIT(i).FaceColor=PC1_cort_color(i,:);
+%  end
+
+ylimits = ylim;
+plotmiddle = mean(ylimits);
+
+z_range = linspace(120,40,251);
+y_range = [plotmiddle-20 plotmiddle+20];
+y_rec = [y_range(1) y_range(2)-y_range(1)];
+
+
+for i = 1:250
+    b = BOUNDARY{i+1};
+    npoints = size(b,1);
+    z_rec = [z_range(i+1) z_range(i)-z_range(i+1)];
+    [x_,y_] = rectangleNpoints(y_rec,z_rec,npoints,1);
+    rec_coords{i} = [ones(npoints,1)*-50 x_ y_];
+end
+
+hold on
+
+for i = 1:250
+hold on
+pMed(i)=fill3(rec_coords{i}(:,1),rec_coords{i}(:,2),rec_coords{i}(:,3),PC1_cort_color(i+1,:),'FaceLighting','none','Clipping','off','LineStyle','none');
+material dull
+
+end
+
+[~,Order] = sort(zscore(coeff{3}(1:250,1),'descend'));
+
+frames = 30;
+R = zeros(250,frames*2);
+r =linspace(0,1,frames);
+for i = 1:250
+    StartTime = round(frames*(find(Order==i)/250))+1;
+    R(i,StartTime:StartTime+frames-1) = r;
+    R(i,StartTime+frames:end) = 1;
+end
+
+
+
+for j = 1:size(R,2)
+%r = .8;
+for i = 1:250
+       
+    bnew= find_point_on_line(rec_coords{i},BOUNDARY{i+1},R(i,j));    
+    pMed(i).Vertices = bnew;
+
+end
+% ylim(ylimits)
+% zlim(zlimits)
+% xlim(xlimits)
+%print(['TestParcel2Point',num2str(j),'.png'],'-dpng')
+pause(.1)
+%print(['./GIF/PPEB_S3_',num2str(j),'.png'],'-dpng')
+end
+
+
+ for i = 1:251
+hold on
+pIT(i).FaceColor=PC1_cort_color(i,:);
+ end

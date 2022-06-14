@@ -86,11 +86,11 @@ zlimits_range = [linspace(zlimits(1),slice_zlimits(1),t)' linspace(zlimits(2),sl
 
 
 TR = stlread('LeftThalMeshSmoothManual.stl');
-% Thalsurf.faces = TR.ConnectivityList;
-% Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
+Thalsurf.faces = TR.ConnectivityList;
+Thalsurf.vertices = MNI_mm2vox(TR.Points,'mm');
 
-Thalsurf.faces = TR.faces;
-Thalsurf.vertices = MNI_mm2vox(TR.vertices,'mm');
+% Thalsurf.faces = TR.faces;
+% Thalsurf.vertices = MNI_mm2vox(TR.vertices,'mm');
 
 
 pThalsurf = patch(Thalsurf);
@@ -101,7 +101,10 @@ material dull
 seed_voxel_coords = seeds_vox(logical(seed_ind),:);
 z_loc = 82;
 
+load('MNI_1mm_mask2.mat','brain_mask')
+
 brain_rescaled = rescale(brain,1,256);
+brain_rescaled(~brain_mask)=NaN;
 brain_slice = brain_rescaled(:,:,z_loc)';
 colormap(gray(256))
 slicesurf = surf(repmat(z_loc, size(brain_slice)), brain_slice);
@@ -139,11 +142,11 @@ end
 
 
 %%
-
+voxel_seeds = seeds_vox(logical(seed_ind),:);
 orange_cmap=repmat([1 .647 0],256,1);
 
 z_locs = [82 82 83:90 89:-1:69 70:82];
-for j = 1:length(z_locs)
+for j = 1:2
     if exist('sSeeds','var')
     delete(sSeeds)
     end
@@ -158,7 +161,7 @@ seed_voxel_coords = seeds_vox(logical(seed_ind),:);
 
 seeds2plot = seed_voxel_coords(seeds2plot_ind,:);
 
-[newslicevals,newCmap] = ProjThalData2Slice(ones(921,1),z_locs(j),voxel_seeds,orange_cmap,1.5);
+[newslicevals,newCmap] = ProjThalData2Slice(ones(921,1),z_locs(j),voxel_seeds,orange_cmap,2);
 slicesurf.CData=newslicevals;
 colormap(newCmap)
 caxis([1 512])
@@ -167,7 +170,7 @@ if j > 1
     clear sSeeds
 for i = 1:length(seeds2plot)
     sphere_mesh_roi = sphere_mesh;
-    sphere_mesh_roi.vertices = (sphere_mesh.vertices.*.25) + [seeds2plot(i,1:2)+.5 83];
+    sphere_mesh_roi.vertices = (sphere_mesh.vertices.*.25) + [seeds2plot(i,1:2) 83];
     sSeeds(i) = patch(sphere_mesh_roi,'EdgeColor','none','FaceColor',[0 0 0]./255,'Clipping','off','FaceLighting','gouraud');
     material dull     
 end
@@ -180,6 +183,7 @@ end
 %%
 
 gene_data = SeedGene_kept;
+gene_data = data_type{2};
 
 genes2use = [1:30 round(linspace(31,2233,91))];
 voxel_seeds = seeds_vox(logical(seed_ind),:);
@@ -226,7 +230,7 @@ end
 seed2plot = seed_voxel_coords(620,:);
 sphere_mesh_roi = sphere_mesh;
 sphere_mesh_roi.vertices = (sphere_mesh.vertices.*.25) + [seed2plot(1,1:2)+.5 83];
-RSeeds = patch(sphere_mesh_roi,'EdgeColor','none','FaceColor',[255 0 0]./255,'Clipping','off','FaceLighting','gouraud');
+RSeeds = patch(sphere_mesh_roi,'EdgeColor','none','FaceColor',[255 0 0]./255,'Clipping','off','FaceLighting','none');
 material dull   
     print(['./GIF/PP2_S5.png'],'-dpng')
     
@@ -314,7 +318,7 @@ pMNIsurface.FaceVertexCData = FaceVertexCData;
 print(['./GIF/PP2_S8_',num2str(i),'.png'],'-dpng')
 end
 
-
+figure
 
 imagesc(norm(seed_order,tract_order))
 xticks([])
@@ -329,8 +333,8 @@ order_tract_data(2:end,:) = NaN;
 tract_plot = pcolor(order_tract_data);
 tract_plot.EdgeAlpha=0;
 set(gca,'YDir','reverse')
-xlim([1 10])
-ylim([-3 6])
+% xlim([1 10])
+% ylim([-3 6])
 
 xlinspace = [10 10 linspace(10,251,118)];
 
@@ -360,8 +364,8 @@ imwrite(f.cdata,['./GIF/PP2_S9.png'],'png');
 
 for i = 1:120
     tract_plot.CData(1:rowspace(i),:) = order_tract_data_orig(1:rowspace(i),:);
-    xlim([1 xlinspace(i)])
-    ylim([ylinspace2(i) ylinspace(i)])
+%     xlim([1 xlinspace(i)])
+%     ylim([ylinspace2(i) ylinspace(i)])
     pause(.1)
     f=getframe(gca);
 imwrite(f.cdata,['./GIF/PP2_S10_',num2str(i),'.png'],'png');
@@ -376,8 +380,8 @@ end
 
 genes2use = [1:30 round(linspace(31,2233,91))];
 
-
-
+figure
+gene_data = data_type{2};
 imagesc(gene_data(seed_order,gene_order))
 xticks([])
 yticks([])
@@ -424,6 +428,22 @@ for i = 1:120
     tract_plot.CData(:,1:rowspace(i)) = order_gene_data_orig(:,1:rowspace(i));
     xlim([1 xlinspace(i)])
     ylim([1 ylinspace(i)])
+    pause(.1)
+    f=getframe(gca);
+imwrite(f.cdata,['./GIF/GENE_MAT_',num2str(i),'.png'],'png');
+    %exportgraphics(gcf,['./GIF/PP2_S10_',num2str(i),'.png'])
+end
+
+
+
+
+f=getframe(gca);
+imwrite(f.cdata,['./GIF/GENE_MAT.png'],'png');
+
+for i = 1:120
+    tract_plot.CData(:,1:rowspace(i)) = order_gene_data_orig(:,1:rowspace(i));
+    xlim([1 2233])
+    ylim([1 921])
     pause(.1)
     f=getframe(gca);
 imwrite(f.cdata,['./GIF/GENE_MAT_',num2str(i),'.png'],'png');

@@ -77,7 +77,8 @@ SPATIAL_DIR = {'Medial-Lateral','Anterior-posterior','Dorsal-ventral'};
         pval_m = [pval_m,'0'];
     end
     pval_n = pval_string(find(pval_string=='e')+1:end);
-    text(-0.5,1,['{\itp} = ',pval_m,'\times10^{',pval_n,'}'],'FontSize',24)
+    %text(-0.5,1,['{\itp} = ',pval_m,'\times10^{',pval_n,'}'],'FontSize',24)
+    %text(-0.5,1,['{\itp} = ',pval_m],'FontSize',24)
     print(['./NewFigures/',PCtypenames{PCtype},'_','PC',num2str(grad),'_medlat_corr.png'],'-dpng','-r300')
     
     
@@ -90,7 +91,7 @@ pc = zscore(coeff{PCtype}(1:250,grad));
     
 figure('Position',[461   462   560   325])
 ax_sub1 = axes('Position',[0.005 .33 .49 .66]);
-p = plotSurfaceROIBoundary(surface,lh_rand500,pc,'midpoint',cmap,1,2);
+p = plotSurfaceROIBoundary(surface,lh_rand500,pc,'midpoint',cmap,2);
 camlight(80,-10);
 camlight(-80,-10);
 view([-90 0])
@@ -99,15 +100,17 @@ axis off
 axis image
 
 ax_sub2 = axes('Position',[.505 .33 .489 .66]);
-[~,~,~,~,~,orig_data_climits] = plotSurfaceROIBoundary(surface,lh_rand500,pc,'midpoint',cmap,1,2);
+plotSurfaceROIBoundary(surface,lh_rand500,pc,'midpoint',cmap,2);
 camlight(80,-10);
 camlight(-80,-10);
 view([90 0])
 axis off
 axis image
 
+caxis([min(pc) max(pc)])
+colormap(cmap)
 c = colorbar('Location','southoutside');
-set(c, 'xlim', orig_data_climits,'Position',[.1 .23 .8 .05],'FontSize',20);
+set(c, 'Position',[.1 .23 .8 .05],'FontSize',20);
 c.Label.String = ['Cortical region PC',num2str(grad),' loading'];
 
 print(['./NewFigures/Cortical_',PCtypenames{PCtype},'_','PC',num2str(grad),'.png'],'-dpng','-r300')
@@ -121,7 +124,7 @@ PC_gene_coeffs = coeff{3}(251:end,grad);
 
 [~,PC_gene_coeffs_sorted] = sort(PC_gene_coeffs,'descend');
 
-hit_list = GeneIDs_all_valid(idx);
+hit_list = MouseGenesValid;
 
 full_gene_list = GeneIDs_all_valid;
 
