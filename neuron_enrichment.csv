@@ -1,0 +1,7 @@
+,class,loading,num_genes,enrichment,p,p<0.01,p<0.001,p<0.0001
+0,Habenula,positive,294,0.4658519578700136,0.8859527331975332,False,False,False
+1,Habenula,negative,294,5.740447037554442,4.1634905898267945e-06,True,True,True
+2,Rora,positive,672,8.63890023138696,5.180494479077199e-27,True,True,True
+3,Rora,negative,672,1.3305049235281794,0.2978079177793759,False,False,False
+4,Gad2/Ahi1,positive,231,1.7959818902093945,0.23641624614019188,False,False,False
+5,Gad2/Ahi1,negative,231,8.092386110226187,4.270692921661459e-08,True,True,True
