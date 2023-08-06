@@ -1,4 +1,4 @@
-function PlotThalGradientSlices(GRAD_DATA,GRAD_DATA_vox_coord,grad_cmap,TITLE,thr)
+function c = PlotThalGradientSlices(GRAD_DATA,GRAD_DATA_vox_coord,grad_cmap,TITLE,thr)
 
 load('MNI_Seed_voxelData.mat','braindata','thalmask')
 

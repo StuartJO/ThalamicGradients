@@ -51,3 +51,9 @@ pc1_gene = zscore(coeff(251:end,1));
 
 save('./data/processed/main_decomp.mat','coeff','score','explained','GeneNames','seed_ind','used_seed_voxel_coords','used_seed_mni_coords','pc1_thal','pc1_cort','pc1_gene')
 
+for i = 1:3
+writematrix(score(:,i),['./data/processed/PC',num2str(i),'_thal.txt'],'Delimiter',' ')
+end
+
+SeedDists = squareform(pdist(seed_coords(logical(seed_ind),:)));
+writematrix(SeedDists,'SeedDists.txt','Delimiter',' ')

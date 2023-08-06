@@ -1,19 +1,24 @@
-MouseThalOnly = MouseAtlasNew;
-MouseThalOnly(~ismember(MouseAtlasNew,mouse_P56_id(ThalRegions))) = NaN;
+load('C:\Users\Stuart\Documents\ThalamicGradients\data\ancillary\MouseOhParc.mat')
+
+ThalRegions = 88:122;
+
+MouseThalOnly = MouseOhParc;
+MouseThalOnly(~ismember(MouseOhParc,ThalRegions)) = NaN;
 MouseThalOnly(MouseThalOnly==0) = NaN;
 MouseThalOnly(1:228,:,:) = NaN;
 
-ThalRegions = 88:122;
-MouseThalROI = changem(MouseThalOnly,1:35,mouse_P56_id(ThalRegions));
+MouseThalROI = changem(MouseThalOnly,1:35,ThalRegions);
 
+MouseThalROICoords = zeros(35,3);
+%
 for i = 1:35
 IND = find(MouseThalROI==i);
 [mX,mY,mZ] = ind2sub(size(MouseThalROI),IND);
 % mouse_medpos(i) = mean(mX);
 d = squareform(pdist([mX,mY,mZ]));
 [~,I] = min(mean(d));
-MouseThalROICoord(i,:) = [mX(I) mX(I) mX(I)];
-i
+MouseThalROICoords(i,:) = [mX(I) mY(I) mZ(I)];
+disp(num2str(i))
 end
 
-save('MouseThalROICoord.mat','MouseThalROICoord')
+save('MouseThalROICoords.mat','MouseThalROICoords')

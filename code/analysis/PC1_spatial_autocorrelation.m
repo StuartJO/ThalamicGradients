@@ -1,6 +1,6 @@
 function PC1_spatial_autocorrelation()
 
-load('main_decomp.mat','score','coeff','GeneIDs_valid')
+load('main_decomp.mat','score','coeff','GeneNames_human')
 load('TractGeneNorm.mat','GeneData_norm')
 
 pc1_thal = zscore(score(:,1));
@@ -44,7 +44,7 @@ significant = p_perm_thal < .05;
 PC_gene_coeffs = coeff(251:end,1);
 
 PC_gene_coeffs_significant = PC_gene_coeffs(significant);
-GeneIDs_significant = GeneIDs_valid(significant);
+GeneIDs_significant = GeneNames_human(significant);
 
 [PC_genes_positive,PC_gene_coeffs_sorted_ind] = sort(PC_gene_coeffs_significant,'descend');
 
@@ -55,4 +55,4 @@ MostNegative = GeneIDs_significant(PC_gene_coeffs_sorted_negative_ind(1:100));
 writecell([MostPositive num2cell(PC_genes_positive(1:100))],'./data/processed/HumanMostPositiveSpinTested.csv')
 writecell([MostNegative num2cell(PC_genes_negative(1:100))],'./data/processed/HumanMostNegativeSpinTested.csv')
 
-writecell([GeneIDs_valid num2cell(PC_gene_coeffs) num2cell(p_perm_thal)],'./data/processed/AllHumanSpinTested.csv')
+writecell([GeneNames_human num2cell(PC_gene_coeffs) num2cell(p_perm_thal)],'./data/processed/AllHumanSpinTested.csv')

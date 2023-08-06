@@ -1,4 +1,9 @@
-function neuromap_corrs = GetNeuromapCorrs()
+function neuromap_corrs = GetNeuromapCorrs(pc_cort)
+
+if nargin < 1
+    load('./data/processed/main_decomp.mat','pc1_cort')
+    pc_cort = pc1_cort;
+end
 
 load('fsaverage_surface_data.mat','lh_rand500')
 
@@ -10,7 +15,7 @@ Nmaps = length(files);
 neuromap = zeros(length(lh_rand500),Nmaps);
 
 for i = 1:Nmaps
-    g= gifti(files(i).name);
+    g = gifti(files(i).name);
     neuromap(:,i) = g.cdata;
 end
 
@@ -20,16 +25,17 @@ for i = 1:parc_size
     neuromap_corrs.neuromap_parc(i,:) = nanmean(neuromap(lh_rand500==i,:),1);
 end
 
-load('./data/processed/main_decomp.mat','pc1_cort')
 load('./data/processed/CorticalSpinTestPerms.mat','perm_id')
+
+neuromap_corrs.data = pc_cort;
 
 neuromap_corrs.p_perm = zeros(Nmaps,1);
 
 for i = 1:Nmaps
-    neuromap_corrs.p_perm(i) = perm_sphere_p(pc1_cort,neuromap_corrs.neuromap_parc(:,i),perm_id,'Pearson');
+    neuromap_corrs.p_perm(i) = perm_sphere_p(neuromap_corrs.data,neuromap_corrs.neuromap_parc(:,i),perm_id,'Pearson');
 end
 
-neuromap_corrs.corr = corr(pc1_cort,neuromap_corrs.neuromap_parc,'Rows','complete')';
+neuromap_corrs.corr = corr(neuromap_corrs.data,neuromap_corrs.neuromap_parc,'Rows','complete')';
 
 neuromap_corrs.corr_sig = neuromap_corrs.p_perm<.05;
 

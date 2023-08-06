@@ -1,6 +1,6 @@
 function CompareDifferentDecomps()
 
-load('./data/processed/main_decomp.mat','pc1_thal','used_seed_voxel_coords')
+main_decomp = load('./data/processed/main_decomp.mat');
 
 load('./data/processed/alt_decomps.mat','AltEmbedding')
 
@@ -15,7 +15,7 @@ xslice_range = fliplr(182-(70:90));
 plotlabel={'a','b','c','d','e','f','g','h','i','j','k','l'};
  for i = 1:6
      subplot(2,3,i); 
-     scatter(pc1_thal,zscore(AltEmbedding{i}(:,1)),'filled');    
+     scatter(main_decomp.pcs_thal(:,1),zscore(AltEmbedding{i}(:,1)),'filled');    
  xlabel('PCA on connectivity and gene data: PC1')
  ylabel(DecompTypeScatter{i})
 set(gca,'FontSize',16)
@@ -30,7 +30,7 @@ cmap = turbo(256);
 close all
 
 for i = 1:6
- PlotThalGradientSlices(zscore(AltEmbedding{i}(:,1)),used_seed_voxel_coords,turbo(256),[DecompType{i},': PC1 score'],2.1)
+ PlotThalGradientSlices(zscore(AltEmbedding{i}(:,1)),main_decomp.used_seed_voxel_coords,turbo(256),[DecompType{i},': PC1 score'],2.1)
   print(['./figure_outputs/Decomp',num2str(i),'.png'],'-dpng','-r300')
 end
 close all

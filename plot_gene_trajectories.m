@@ -1,4 +1,12 @@
-function plot_gene_trajectories()
+function plot_gene_trajectories(PC,savename)
+
+if nargin < 1
+    PC = 1;
+end
+
+if nargin < 2
+    savename = [];
+end
 
 bar_cmap = brewermap(256,'RdBu');
 size_cmap = size(bar_cmap,1);
@@ -11,12 +19,12 @@ for i = 1:2
 subplot(1,2,i)
 if i == 1
     
-   traj = readtable('negative_trajectories.csv'); 
+   traj = readtable(['negative_trajectories_PC',num2str(PC),'.csv']); 
    plotcmap = neg_bar_cmap;  
    Plotlabel = 'a';
 else
     
-   traj = readtable('positive_trajectories.csv'); 
+   traj = readtable(['positive_trajectories_PC',num2str(PC),'.csv']); 
    plotcmap = pos_bar_cmap;
    Plotlabel = 'b';
 end
@@ -46,10 +54,13 @@ t1 = text(280,find_point_on_line(ylimits(1),ylimits(2),.95),'  postnatal','Horiz
 t2 = text(280,find_point_on_line(ylimits(1),ylimits(2),.95),'prenatal  ','HorizontalAlignment','right','FontSize',20);
 xlabel('Age in days (log)')
 ylabel('Relative gene expression')
+title(['PC',num2str(PC)])
 set(gca,'FontSize',20)
 axis_pos = get(gca,'OuterPosition');
     annotYpos = find_point_on_line(axis_pos(2),axis_pos(2)+axis_pos(4),.9);
-    annotation('textbox',[axis_pos(1)+.015 annotYpos axis_pos(3).*.1 axis_pos(2)+axis_pos(4)-annotYpos],'String',Plotlabel,'FontSize',18,'EdgeColor','none')
+    annotation('textbox',[axis_pos(1)+.015 annotYpos axis_pos(3).*.1 axis_pos(2)+axis_pos(4)-annotYpos],'String',Plotlabel,'FontSize',24,'EdgeColor','none')
 end
 
-exportgraphics(gcf,'./figure_outputs/FigS8.png','Resolution',300)
+if ~isempty(savename)
+    exportgraphics(gcf,savename,'Resolution',300)
+end

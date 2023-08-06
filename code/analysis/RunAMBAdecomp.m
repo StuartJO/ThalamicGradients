@@ -50,8 +50,8 @@ mouse_TractData_GeneData_norm = [mouse_TractData_norm mouse_GeneData_norm];
 
 [mouse_coeff,mouse_score,~,~,mouse_explained] = pca(mouse_TractData_GeneData_norm);
 
-mouse_pc1_thal = zscore(mouse_score(:,1));
-mouse_pc1_cort = zscore(mouse_coeff(1:38,1));
-mouse_pc1_gene = zscore(mouse_coeff(39:end,1));
+mouse_pcs_thal = zscore(mouse_score);
+mouse_pcs_cort = zscore(mouse_coeff(1:38,:));
+mouse_pcs_gene = zscore(mouse_coeff(39:end,:));
 
-save('./data/processed/mouse_decomp.mat','mouse_coeff','mouse_score','mouse_explained','mouse_GeneNames','mouse_pc1_thal','mouse_pc1_cort','mouse_pc1_gene')
+save('./data/processed/mouse_decomp.mat','mouse_coeff','mouse_score','mouse_explained','mouse_GeneNames','mouse_pcs_thal','mouse_pcs_cort','mouse_pcs_gene')
