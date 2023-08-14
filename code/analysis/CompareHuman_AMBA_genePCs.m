@@ -1,6 +1,8 @@
 TractGeneNorm = load('./data/processed/TractGeneNorm.mat');
+load('./data/processed/mouse_decomp.mat')
+load('./data/processed/main_decomp.mat')
 
-GeneNames_human = TractGeneNorm.GeneNames;
+GeneNames_human = TractGeneNorm.GeneNames_human;
 
 PhillipsGeneTable = readtable('PhillipsMouseThalGenes.xlsx');
 GeneNames_phillips = PhillipsGeneTable.GeneSymbol;
@@ -25,7 +27,8 @@ s = scatterfit(x,y,36,lines(1),[],2,1);
 xlabel(['Human gene PC',num2str(i),' loading'])
 ylabel({'Allen Mouse Brain',['gene PC',num2str(j),' loading']})
 a = annotation('textbox',[0 .89 .05 .13],'String',annotlabels{iter},'FontSize',32,'EdgeColor','none');
-print(['./figure_outputs/MouseVsHumanGene_',num2str(iter),'.png'],'-dpng','-r300')
+print(['./figure_outputs/Bitmap/MouseVsHumanGene_',num2str(iter),'.png'],'-dpng','-r300')
+print(['./figure_outputs/Vector/MouseVsHumanGene_',num2str(iter),'.svg'],'-dsvg')
 iter = iter + 1;
     end   
 end

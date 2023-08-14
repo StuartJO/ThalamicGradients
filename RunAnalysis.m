@@ -1,4 +1,3 @@
-
 TractGeneData = load('CompiledTractGeneData.mat');
 CompiledTractData = PrepareTractGeneData(TractGeneData);
 
@@ -9,16 +8,17 @@ TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.Ge
 Ncorts = size(CompiledTractData.TractData_norm,2);
 
 decomp = RunPCADecomp(TractData_GeneData_norm,CompiledTractData.seed_ind,1:Ncorts,Ncorts+1:size(TractData_GeneData_norm,2));
-
+decomp.GeneNames_human = CompiledTractData.GeneNames_human;
 save('./data/processed/main_decomp.mat','-struct','decomp')
 
 for i = 1:3
 writematrix(decomp.score(:,i),['./data/processed/PC',num2str(i),'_thal.txt'],'Delimiter',' ')
 end
 
-SeedDists = squareform(pdist(seed_vox_coords(logical(seed_ind),:)));
-writematrix(SeedDists,'SeedDists.txt','Delimiter',' ')
+load('./data/ancillary/MNI_Seed_voxelData.mat','seed_vox_coords')
 
+SeedDists = squareform(pdist(seed_vox_coords(logical(TractGeneData.seed_ind),:)));
+writematrix(SeedDists,'SeedDists.txt','Delimiter',' ')
 
 %%
 TractGeneData = load('CompiledTractGeneData_AllGeneSeed.mat');
@@ -27,6 +27,7 @@ save('./data/processed/TractGeneNorm_AllGeneSeed.mat','-struct','CompiledTractDa
 TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.GeneData_norm];
 Ncorts = size(CompiledTractData.TractData_norm,2);
 decomp = RunPCADecomp(TractData_GeneData_norm,CompiledTractData.seed_ind,1:Ncorts,Ncorts+1:size(TractData_GeneData_norm,2));
+decomp.GeneNames_human = CompiledTractData.GeneNames_human;
 save('./data/processed/decomp_AllGeneSeed.mat','-struct','decomp')
 
 TractGeneData = load('CompiledTractGeneData_Scha400.mat');
@@ -35,6 +36,7 @@ save('./data/processed/TractGeneNorm_Scha400.mat','-struct','CompiledTractData')
 TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.GeneData_norm];
 Ncorts = size(CompiledTractData.TractData_norm,2);
 decomp = RunPCADecomp(TractData_GeneData_norm,CompiledTractData.seed_ind,1:Ncorts,Ncorts+1:size(TractData_GeneData_norm,2));
+decomp.GeneNames_human = CompiledTractData.GeneNames_human;
 save('./data/processed/decomp_Scha400.mat','-struct','decomp')
 
 %% Run mouse PCA
@@ -50,11 +52,11 @@ save('./data/processed/alt_decomps','AltEmbedding','DecompName')
 %% Get 
 
 main_decomp = load('main_decomp.mat');
-
+main_genedata = load('TractGeneNorm.mat');
 for i = 1:3
 surrogates = csvread(['thal_surrogates_PC',num2str(i),'.csv']);  
 pc_gene_coeffs = main_decomp.coeff(251:end,i);
-AutoCorrReslt = PC_spatial_autocorrelation(main_decomp.score(:,i),pc_gene_coeffs,surrogates');
+AutoCorrReslt = PC_spatial_autocorrelation(main_decomp.score(:,i),pc_gene_coeffs,main_genedata,surrogates');
 
 writecell([AutoCorrReslt.MostPositive num2cell(AutoCorrReslt.PC_genes_positive(1:100))],['./data/processed/PC',num2str(i),'_HumanMostPositiveSpinTested.csv'])
 writecell([AutoCorrReslt.MostNegative num2cell(AutoCorrReslt.PC_genes_negative(1:100))],['./data/processed/PC',num2str(i),'_HumanMostNegativeSpinTested.csv'])
@@ -67,6 +69,7 @@ end
 
 %%
 
+%GetCorticalSpinTestPerms()
 
 for i = 1:3
     neuromap_corrs = GetNeuromapCorrs(main_decomp.pcs_cort(:,i));
@@ -75,7 +78,6 @@ end
 
 
 %% Bootstrap and CV
-
 
 TractGeneData = load('CompiledTractGeneData.mat');
 CompiledTractData = load('./data/processed/TractGeneNorm.mat');
@@ -134,71 +136,9 @@ for i = 1:Nboot
 end
 
 tract_decomp = RunPCADecomp(CompiledTractData.TractData_norm,CompiledTractData.seed_ind,1:250,[]);
+save('./data/processed/decomp_TractOnly.mat','-struct','tract_decomp')
 
-main_decomp = load('main_decomp.mat');
-
-figure('Position',[146 301 1073 590])
-offset_x = -.01;
-offset_y = .02;
-
-subplot(2,3,2)
-histogram(corr(main_decomp.score(:,1),scorePC1_boot))
-xlabel('Bootstrapped score correlation with original')
-ylabel('Count')
-title('Gene+tract')
-addPlotLabel('b',gca,24,[offset_x offset_y])
-subplot(2,3,3)
-histogram(corr(main_decomp.coeff(:,1),coeffPC1_boot))
-xlabel('Bootstrapped loading correlation with original')
-ylabel('Count')
-title('Gene+tract')
-addPlotLabel('c',gca,24,[offset_x offset_y])
-subplot(2,3,5)
-histogram(corr(tract_decomp.score(:,1),scorePC1_boot_tract))
-xlabel('Bootstrapped score correlation with original')
-ylabel('Count')
-title('Tract')
-addPlotLabel('e',gca,24,[offset_x offset_y])
-subplot(2,3,6)
-histogram(corr(tract_decomp.coeff(:,1),coeffPC1_boot_tract))
-xlabel('Bootstrapped loading correlation with original')
-ylabel('Count')
-title('Tract')
-addPlotLabel('f',gca,24,[offset_x offset_y])
-
-subplot(2,3,1)
-for i = 1:5
-V(i) = Violin(expl_boot(:,i), i,'ShowMean',true,'ShowData',false,'ViolinAlpha',.25);
-V(i).ViolinColor = [.5 .5 .5];
-V(i).MeanPlot.Color = [0 0 0];
-V(i).EdgeColor = [0 0 0];
-V(i).ViolinPlot.LineWidth = .5;
-V(i).BoxColor = [0 0 0];
-end
-hold on
-plot(main_decomp.explained(1:5),'r','LineWidth',2)
-xlabel('PC')
-ylabel('Variance explained')
-title('Gene+tract')
-addPlotLabel('a',gca,24,[offset_x offset_y])
-subplot(2,3,4)
-for i = 1:5
-V(i) = Violin(expl_boot_tract(:,i), i,'ShowMean',true,'ShowData',false,'ViolinAlpha',.25);
-V(i).ViolinColor = [.5 .5 .5];
-V(i).MeanPlot.Color = [0 0 0];
-V(i).EdgeColor = [0 0 0];
-V(i).ViolinPlot.LineWidth = .5;
-V(i).BoxColor = [0 0 0];
-end
-hold on
-plot(tract_decomp.explained(1:5),'r','LineWidth',2)
-xlabel('PC')
-title('Tract')
-ylabel('Variance explained')
-addPlotLabel('d',gca,24,[offset_x offset_y])
-
-exportgraphics(gcf,'bootstrap_result.png','Resolution',300)
-
+save('Bootstrap_results.mat','coeffPC1_boot','scorePC1_boot','expl_boot','coeffPC1_boot_tract','scorePC1_boot_tract','expl_boot_tract')
 %% Leave-one-out
 
 h = waitbar(0,'Please wait...');
@@ -230,11 +170,4 @@ end
 
 RMSE = sqrt(nanmean((main_decomp.score(:,1) - scoresCV).^2)); % Root Mean Squared Error
 
-figure
-histogram(RMSE)
-
-xlabel('RMSE of PC1 scores')
-ylabel({'Number of','leave-one-out iterations'})
-set(gca,'FontSize',20)
-
-exportgraphics(gcf,'loocv_result.png','Resolution',300)
+save('loocv_result.mat','RMSE','scoresCV')

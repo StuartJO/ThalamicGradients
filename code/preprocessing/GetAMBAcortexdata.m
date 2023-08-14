@@ -2,7 +2,7 @@ function [mouse_CortFeatures,mouse_ThalHierarchy] = GetAMBAcortexdata()
    
 load ('./data/preprocessed/AllenGeneDataset_19419.mat','structInfo')
 
-AMBA_cort_data = load('./data/preprocessed/Data_ABAcortex.mat');
+AMBA_cort_data = load('./data/preprocessed/Data_AMBAcortex.mat');
 
 MouseHierarchy = readtable('./data/preprocessed/TCCT_CCconf_iter.xls','Range','A2:E62');
 
@@ -20,7 +20,7 @@ mouse_CortFeatures.data = AMBA_cort_data.dataMatrix(iy,:);
 
 mouse_CortFeatures.data(:,6) = mouse_CortHierarchy;
 
-mouse_CortFeatures.name = {'Grik2 expression','Pvalb expression','Grin3a expression','PV cell density','axonal input strength','Hierarchical level','Cytoarchitecture type','T1w:T2w','PC1 transcription'};
+mouse_CortFeatures.name = {'Grik2 expression','Pvalb expression','Grin3a expression','PV cell density','Axonal input strength','Hierarchical level','Cytoarchitecture type','T1w:T2w','PC1 transcription'};
 
 ThalRegions = 88:122;
 

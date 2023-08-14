@@ -54,17 +54,17 @@ AltEmbedding{1} = AltEmbedding{1}.*-1;
 %% Run joint decomposition with Phillips mouse genes with PCA
 Tract_PhillipsGenes = [TractData_norm GeneData_norm(:,PhillipsMouse_HumanGenesOverlap_idx)];
 
-[~,AltEmbedding{2}] = pca(Tract_PhillipsGenes);
+[~,AltEmbedding{4}] = pca(Tract_PhillipsGenes);
 
 %% Run decomposition with tract and gene data seperately using PCA
 
 [~,AltEmbedding{3}] = pca(TractData_norm);
 
-[~,AltEmbedding{4}] = pca(GeneData_norm);
+[~,AltEmbedding{2}] = pca(GeneData_norm);
 
 %% Run the decomposition of the first 10 PCs from the seperate tract and gene decompositions
 
-[~,AltEmbedding{5}] = pca(zscore([AltEmbedding{3}(:,1:10) AltEmbedding{4}(:,1:10)]));
+[~,AltEmbedding{5}] = pca(zscore([AltEmbedding{2}(:,1:10) AltEmbedding{3}(:,1:10)]));
 
 %% Averaged cosine similarity, DE 
 
@@ -89,4 +89,4 @@ end
 
 %% 
 
-DecompName = {'Diffusion embedding','PCA on connectivity and Phillips genes','PCA on connectivity data only','PCA on gene-expression data only','PCA on first 10 connectvity and gene PCs','Diffusion embedding on mean affinity matrix'};
+DecompName = {'Diffusion embedding','PCA on connectivity data only','PCA on gene-expression data only','PCA on connectivity and Phillips genes','PCA on first 10 connectvity and gene PCs','Diffusion embedding on mean affinity matrix'};

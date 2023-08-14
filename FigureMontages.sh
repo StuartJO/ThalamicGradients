@@ -23,3 +23,7 @@ magick montage Sigmap* -tile 4x5 -geometry +0+50 PC2_neuromaps.png
 magick montage Sigmap* -tile 3x4 -geometry +0+50 PC3_neuromaps.png
 
 magick montage Sigmap* -tile 3x5 -geometry +0+50 PC1_neuromaps.png
+
+
+
+magick montage Sigmap*.svg -tile 3x5 -geometry +0+50 PC1_neuromaps.svg

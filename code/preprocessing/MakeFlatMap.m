@@ -48,7 +48,7 @@ for i = 2:length(Vq)-1
    end
 end
 
-% COnvert to a triangular mesh to make pretty boundaries
+% Convert to a triangular mesh to make pretty boundaries
 
 [F,V]=mesh2tri(Xq,Yq,Vqsmooth,'f');
 
@@ -62,7 +62,7 @@ faces = double(F);
 % sucked
 
 MouseCorticalDivisions = [2     6     6     6     5     5     5     6     1     1     1     1     1     1     1     4 ...
-    2     4     4     4     2     3     5     5     6     6     2     2     2     5     5     6 ...
+    2     4     4     4     2     5     5     5     6     6     2     2     2     5     5     6 ...
     1     1     3     3     3     5];
 
 save('./data/ancillary/Mouseflatmap.mat','Mouseflatmap_boundary','Mouseflatmap_boundary_id','MouseCorticalDivisions')

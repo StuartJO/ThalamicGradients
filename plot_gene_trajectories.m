@@ -1,11 +1,7 @@
-function plot_gene_trajectories(PC,savename)
+function [NegTrajs,PosTrajs] = plot_gene_trajectories(PC)
 
 if nargin < 1
     PC = 1;
-end
-
-if nargin < 2
-    savename = [];
 end
 
 bar_cmap = brewermap(256,'RdBu');
@@ -34,15 +30,30 @@ GenestrajID = unique(traj.symbol);
 
 enrichlimits = [min(traj.fit) max(traj.fit)];
 
+Nages = length(unique(traj.age));
+
+FITS = zeros(Nages,length(GenestrajID));
+
 hold on
-for i = 1:length(GenestrajID)
-   IND = strcmp(traj.symbol,GenestrajID{i});
+for j = 1:length(GenestrajID)
+   IND = strcmp(traj.symbol,GenestrajID{j});
    x = traj.age(IND);
    y = traj.fit(IND);
    
    plotcolor = MapData2Colors(max(y),plotcmap,enrichlimits);
    
-   pos_traj_plot(i) = plot(x,y,'Color',[plotcolor 1]);
+   pos_traj_plot(j) = plot(x,y,'Color',[plotcolor 1]);
+   
+   FITS(:,j) = y;
+   
+end
+
+AGE = x;
+
+if i == 1
+   NegTrajs = array2table([AGE FITS],'VariableNames',[{'Age_in_days'},GenestrajID']);
+else
+   PosTrajs = array2table([AGE FITS],'VariableNames',[{'Age_in_days'},GenestrajID']);
 end
 
 set(gca,'XScale','log')
@@ -59,8 +70,4 @@ set(gca,'FontSize',20)
 axis_pos = get(gca,'OuterPosition');
     annotYpos = find_point_on_line(axis_pos(2),axis_pos(2)+axis_pos(4),.9);
     annotation('textbox',[axis_pos(1)+.015 annotYpos axis_pos(3).*.1 axis_pos(2)+axis_pos(4)-annotYpos],'String',Plotlabel,'FontSize',24,'EdgeColor','none')
-end
-
-if ~isempty(savename)
-    exportgraphics(gcf,savename,'Resolution',300)
 end
