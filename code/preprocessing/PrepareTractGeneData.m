@@ -21,16 +21,6 @@ GeneIDs_burt = GeneIDs_burt_table.Var1;
 
 GeneNames = GeneIDs_burt(GeneIDs_burt_Gryglewski_ind);
 
-% Load in the Phillips et al genes
-
-PhillipsGeneTable = readtable('PhillipsMouseThalGenes.xlsx');
-
-GeneIDs_phillips = PhillipsGeneTable.GeneSymbol;
-
-GeneIDs_phillips_upper = upper(GeneIDs_phillips);
-
-PhillipsMouse_HumanGenesOverlap_idx = find(ismember(GeneNames, GeneIDs_phillips_upper));
-
 TractData_norm = BF_NormalizeMatrix(TractGeneData.ThalSeedAvg,'scaledSigmoid');
 GeneData_norm = BF_NormalizeMatrix(TractGeneData.SeedGene_kept,'scaledSigmoid');
 

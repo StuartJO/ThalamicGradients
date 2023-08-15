@@ -5,12 +5,16 @@ from scipy.stats import hypergeom
 
 import os, glob
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib.pyplot as plt
+#import seaborn as sns
 
 print(sc.__version__)
 print(pd.__version__)
 print(np.__version__)
+
+SAVEDIR='./data/processed/cell_enrichment'
+
+os.mkdir(SAVEDIR)
 
 # Some functions for gene enrichment analyses
 def calculate_enrichment(hit_list, top_genes, full_gene_list):
@@ -175,7 +179,7 @@ for OUTNAME in PCs:
 	enrichment['p<0.001'] = enrichment['p']<0.001
 	enrichment['p<0.0001'] = enrichment['p']<0.0001
 
-	enrichment
+	#enrichment
 
 	enrichment.to_csv('data/processed/cell_enrichment_' + OUTNAME +'.csv')
 
@@ -183,7 +187,7 @@ for OUTNAME in PCs:
 	neuron_cell_data = cell_data[cell_data['Class'] == 'Neuron']
 	# drop whole neuron group
 	neuron_cell_data = neuron_cell_data.loc[~(neuron_cell_data['Cluster']=='Neuron_ALL')]
-	neuron_cell_data
+	#neuron_cell_data
 
 	# subtype enrichment
 
@@ -196,44 +200,33 @@ for OUTNAME in PCs:
 	neuron_enrichment['p<0.01'] = neuron_enrichment['p']<0.01
 	neuron_enrichment['p<0.001'] = neuron_enrichment['p']<0.001
 	neuron_enrichment['p<0.0001'] = neuron_enrichment['p']<0.0001
-	neuron_enrichment
+	#neuron_enrichment
 
 	neuron_enrichment.to_csv('data/processed/neuron_enrichment_' + OUTNAME +'.csv')
 
 	for n, i in enumerate(list(neuron_cell_data['Cluster'])):
-	    print('')
-	    print('genes shared between postive top 100 and {:}'.format(i))
-	    print(list(set(filtered_positive_homologs) & set(list(neuron_cell_data['genes'])[n])))
-	    save_name=format(i)
-	    genelist=pd.DataFrame({'Gene' : list(set(filtered_positive_homologs) & set(list(neuron_cell_data['genes'])[n]))})
-	    genelist.to_csv('data/processed/Positive'+save_name+'Genes_' + OUTNAME +'.csv')
+		print('')
+		print('genes shared between postive top 100 and {:}'.format(i))
+		print(list(set(filtered_positive_homologs) & set(list(neuron_cell_data['genes'])[n])))
+		save_name=format(i)
+		genelist=pd.DataFrame({'Gene' : list(set(filtered_positive_homologs) & set(list(neuron_cell_data['genes'])[n]))})
+		genelist.to_csv(SAVEDIR+'/Positive'+save_name+'Genes_' + OUTNAME +'.csv')
 
 	for n, i in enumerate(list(neuron_cell_data['Cluster'])):
-	    print('')
-	    print('genes shared between negative bottom 100 and {:}'.format(i))
-	    print(list(set(filtered_negative_homologs) & set(list(neuron_cell_data['genes'])[n])))
-	    save_name=format(i)
-	    genelist=pd.DataFrame({'Gene' : list(set(filtered_negative_homologs) & set(list(neuron_cell_data['genes'])[n]))})
-	    genelist.to_csv('data/processed/Negative'+save_name+'Genes_' + OUTNAME +'.csv')
+		print('')
+		print('genes shared between negative bottom 100 and {:}'.format(i))
+		print(list(set(filtered_negative_homologs) & set(list(neuron_cell_data['genes'])[n])))
+		save_name=format(i)
+		genelist=pd.DataFrame({'Gene' : list(set(filtered_negative_homologs) & set(list(neuron_cell_data['genes'])[n]))})
+		genelist.to_csv(SAVEDIR+'/Negative'+save_name+'Genes_' + OUTNAME +'.csv')
 
 	subcluster_enrichment = run_enrichment(cluster_names, cluster_genes, filtered_positive_homologs, filtered_negative_homologs, neuron_genes)
 	subcluster_enrichment.rename(columns={"class": "subcluster"}, inplace=True)
 	subcluster_enrichment
 
-	subcluster_enrichment.to_csv('data/processed/subcluster_enrichment_' + OUTNAME +'.csv')
+	subcluster_enrichment.to_csv(SAVEDIR+'/subcluster_enrichment_' + OUTNAME +'.csv')
 
 	# split into positive and negative lists
 	positive_subcluster_enrichment = subcluster_enrichment.loc[subcluster_enrichment.loading=='positive'].copy().reset_index(drop=True)
 	negative_subcluster_enrichment = subcluster_enrichment.loc[subcluster_enrichment.loading=='negative'].copy().reset_index(drop=True)
-	print(negative_subcluster_enrichment)
-
-	#print(positive_subcluster_enrichment)
-	# sort by total amount of enrichment
-	positive_subcluster_enrichment['total_enrichment'] = positive_subcluster_enrichment['enrichment'] - negative_subcluster_enrichment['enrichment']
-	negative_subcluster_enrichment['total_enrichment'] = positive_subcluster_enrichment['enrichment'] - negative_subcluster_enrichment['enrichment'] 
-
-	positive_subcluster_enrichment = positive_subcluster_enrichment.sort_values(by='total_enrichment')
-	negative_subcluster_enrichment = negative_subcluster_enrichment.sort_values(by='total_enrichment')
-
-	# negate negative enrichment to plot
-	negative_subcluster_enrichment['negative_enrichment'] = negative_subcluster_enrichment['enrichment']*-1
+	#print(negative_subcluster_enrichment)

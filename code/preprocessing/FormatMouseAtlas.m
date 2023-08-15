@@ -11,6 +11,7 @@ CCFv3_annots = Get_CCFv3_annots;
 
 [~,idx] = ismember(structInfo.name,CCFv3_annots.name);
 
+% This gives what the ID of the Oh parcellation is in the CCFv3 atlas
 mouse_CCFv3_id = CCFv3_annots.ID(idx);
 
 gunzip('./data/ancillary/P56_Annotation.nii.gz','./data/ancillary')
@@ -24,17 +25,21 @@ delete('./data/ancillary/P56_Annotation.nii')
 % fine grained areas in a region, we need to find all the regions which
 % belong to a "meta" region and group them together. Fortunately these
 % subregions are (usually) labelled with a prefix that indicates which meta
-% region in belongs do.
+% region it belongs do.
 
 MouseOhParc = zeros(size(MouseAtlas));
 
-for i = 1:213   
+% Number areas according to the Oh ID
+for i = 1:length(mouse_CCFv3_id)   
     formatName = structInfo.name{i};
     ids = CCFv3_annots.ID(contains(CCFv3_annots.name,formatName));
     MouseOhParc(ismember(MouseAtlas,ids)) = i;
 end
 
-% Do some manual fixes
+%% Do some manual fixes
+
+% Using info from Table S2 from https://doi.org/10.1016/j.cell.2020.04.007,
+% I did some manual corrections
 
 % Subregions of the "Frontal pole" don't share the exact same prefix as the
 % meta region
@@ -52,10 +57,10 @@ MouseOhParc(ismember(MouseAtlas,809:811))=148;
 
 save('./data/ancillary/MouseOhParc.mat','MouseOhParc')
 
-% The following regions are in the parcellation because we cannot find a
-% mapping between their structure ID and any of the IDs in the CCFv3 data.
-% But none of these regions are cortex or thalamus so we don't care about
-% them :)
+% The following regions are in the parcellation because we cannot (or more 
+% accurately, I could not figure out how to) find a mapping between their 
+% structure ID and any of the IDs in the CCFv3 data. But none of these 
+% regions are cortex or thalamus so we don't care about them :)
 
 %NotInParc = find(~ismember(1:213,unique(MouseOhParc)));
 %structInfo.name(NotInParc)
@@ -66,11 +71,12 @@ save('./data/ancillary/MouseOhParc.mat','MouseOhParc')
 % {'Culmen'                 }
 % {'Ansiform lobule'        }
 
-%%
+%% Get the nifti data from the compressed file
 
 gunzip('./data/ancillary/P56_Atlas.nii.gz','./data/ancillary')
 
 MouseBrain = double(niftiread('./data/ancillary/P56_Atlas.nii'));
 save('./data/ancillary/MouseBrain.mat','MouseBrain')
 
+% The uncompressed data is deleted to save space
 delete('./data/ancillary/P56_Atlas.nii')

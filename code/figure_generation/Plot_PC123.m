@@ -20,9 +20,6 @@ for grad = 1:3
         print(['./figure_outputs/',savefldr,'/Thalamus_PC',num2str(grad),'_score.svg'],'-dsvg','-r300')
     end
     
-%     PlotThalGradientSlicesAlt(pc_thal,decomp.used_seed_voxel_coords,cmap,['Thalamic seed PC',num2str(grad),' score'],2.1,1);
-%     print(['./figure_outputs/',savefldr,'/Thalamus_PC',num2str(grad),'_score_ImgOnly.png'],'-dpng','-r600')
-%     
     surface.vertices = lh_inflated_verts;
     surface.faces = lh_faces;
     pc_cort = decomp.pcs_cort(:,grad);

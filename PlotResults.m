@@ -663,7 +663,7 @@ tsne_neuron_only = tsnedata(TSNENeuronSubclustersIND,:);
 NeuronSubtype = {'Habenula','Rora','Gad2/Ahi1'};
 
 for i = 1:3
-%copyfile(['CellEnrichmentCombined_PC',num2str(i),'.xlsx'],['SupplementaryTable',num2str(i+2),'.xlsx'],'f')
+copyfile(['CellEnrichmentCombined_PC',num2str(i),'.xlsx'],['SupplementaryTable',num2str(i+2),'.xlsx'],'f')
 
 myTable = readtable(['CellEnrichmentCombined_PC',num2str(i),'.xlsx'],'Sheet','CellClassEnrichment');
 writetable(myTable,['./SourceDataTables/Fig',FigNumber{i},'a.xlsx'])

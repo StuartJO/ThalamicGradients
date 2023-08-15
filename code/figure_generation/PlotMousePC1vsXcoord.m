@@ -11,6 +11,5 @@ end
 set(gca,'FontSize',20)
 xlabel('CCFv3 {\itx}-coordinate')
 ylabel('mPC1 score')
-%addPlotLabel('a')
 print(['./figure_outputs/ThalNucleiNamePos.svg'],'-dsvg')
 print(['./figure_outputs/ThalNucleiNamePos.png'],'-dpng')

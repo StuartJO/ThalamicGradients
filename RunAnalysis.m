@@ -166,8 +166,6 @@ for i = 1:nObs
     waitbar(i/nObs,h,['Finished CV ',num2str(i)])
 end
 
-%histogram(nanvar(scoresCV,[],2))
-
 RMSE = sqrt(nanmean((main_decomp.score(:,1) - scoresCV).^2)); % Root Mean Squared Error
 
 save('loocv_result.mat','RMSE','scoresCV')

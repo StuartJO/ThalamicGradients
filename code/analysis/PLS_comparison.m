@@ -1,4 +1,9 @@
+% Compare the PCA result to one obtained from PLS
+
 load('main_decomp.mat')
+
+% Lets predict the connectivity values from the gene expression values
+
 [XL,YL,XS,YS,BETA,PCTVAR,MSE,stats] = plsregress(input(:,251:end),input(:,1:250));
 
 figure('Position',[195         139        1555         459])
@@ -21,4 +26,5 @@ xlabel('PC1 cortical loading')
 ylabel({'PLS 1st component','cortical loading'})
 set(gca,'Fontsize',16)
 addPlotLabel('C',gca,24,[0 0])
-exportgraphics(gcf,'./figure_outputs/PLS_comparison.png')
+
+%exportgraphics(gcf,'./figure_outputs/PLS_comparison.png')

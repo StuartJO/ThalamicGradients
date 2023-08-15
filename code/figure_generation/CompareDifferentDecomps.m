@@ -19,8 +19,8 @@ for i = 1:6
      addPlotLabel(numberToLetter(i),gca,24,[-.01,0.02])
 end
  
-%exportgraphics(gcf,'./figure_outputs/S4.png','Resolution',300)
-%print(['./figure_outputs/S4.svg'],'-dsvg','-r300')
+exportgraphics(gcf,'./figure_outputs/AltDecomps/S4.png','Resolution',300)
+print(['./figure_outputs/AltDecomps/S4.svg'],'-dsvg','-r300')
 
 cmap = turbo(256);
 

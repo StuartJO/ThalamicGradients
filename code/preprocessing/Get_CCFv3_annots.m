@@ -5,6 +5,10 @@ function [CCFv3_annots,ccfv3_annots] = Get_CCFv3_annots()
 
 % Originally it would output all the data as a 1327*1 cell. I changed it so it now outputs a table. Which is nicer. 
 
+
+% Get Table S2 from https://doi.org/10.1016/j.cell.2020.04.007 to see how
+% all the regions are hierarchically linked to each other
+
 ccfv3_annots = [
 {0','000000','root','root'},
 {1','BFDAE3','grey','Basic cell groups and regions'},

@@ -17,9 +17,7 @@ for i = 1:9
    feature = mouse_CortFeatures.data(:,i); 
 
    annotlabel = numberToLetter(i);
-   
-   %[c,p] = corr(mouse_pcs_cort(:,PC),feature,'Type','Pearson','rows','pairwise');
-   
+     
    s = scatterfit(mouse_pcs_cort(:,PC),feature,40,mouse_pcs_cort(:,PC),[],2,1);
    s.MarkerEdgeColor = [0 0 0];
    xlabel(['Cortical mouse PC',num2str(PC),' loading'])
@@ -29,8 +27,10 @@ for i = 1:9
    a = annotation('textbox',[0 .905 .05 .13],'String',annotlabel,'FontSize',32,'EdgeColor','none');
       
    [RHO,P,CIL,CIU] = corrcoef(mouse_pcs_cort(:,PC),feature,'Rows','complete');
+   
+   DF = sum(~isnan(sum(data,2)))-2;
     
-   disp(['Panel ',annotlabel,', Pearson''s r(',num2str(length(feature)-2),') = ',num2str(RHO(1,2)),', p = ',num2str(P(1,2)),', CI = [',num2str(CIL(1,2)),', ',num2str(CIU(1,2)),'], two-tailed'])
+   disp(['Panel ',annotlabel,', Pearson''s r(',num2str(DF),') = ',num2str(RHO(1,2)),', p = ',num2str(P(1,2)),', CI = [',num2str(CIL(1,2)),', ',num2str(CIU(1,2)),'], two-tailed'])
       
    print(['./figure_outputs/MouseCort/mPC',num2str(PC),annotlabel,'.png'],'-dpng','-r300')
    print(['./figure_outputs/MouseCort/mPC',num2str(PC),annotlabel,'.svg'],'-dsvg')

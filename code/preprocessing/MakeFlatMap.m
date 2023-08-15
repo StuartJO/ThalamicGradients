@@ -2,7 +2,8 @@ function MakeFlatMap()
 
 load ('./data/preprocessed/AllenGeneDataset_19419.mat','structInfo')
 
-flat_map = flipud(fliplr(double(nrrdread('./data/ancillary/flatmap_dorsal.nrrd'))));
+% flat_map = flipud(fliplr(double(nrrdread('./data/ancillary/flatmap_dorsal.nrrd'))));
+flat_map = rot90(double(nrrdread('./data/ancillary/flatmap_dorsal.nrrd')),2);
 
 % FlatMapIds.xlsx was made by eyeballing Harris et al. Nature 2019, Fig 1b
 % and comparing it to the initial boundaries drawn. I would use the values

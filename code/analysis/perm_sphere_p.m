@@ -13,6 +13,8 @@
 % p_perm            permutation p-value
 %
 % František Váša, fv247@cam.ac.uk, June 2017 - June 2018
+%
+% Adapted to run for one hemisphere only
 
 function p_perm = perm_sphere_p(x,y,perm_id,corr_type)
 

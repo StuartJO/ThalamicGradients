@@ -1,3 +1,5 @@
+function RunAMBAdecomp()
+
 % Load in the mouse connectivity data
 % As per the description here:
 % https://github.com/benfulcher/mouseStructuralConnectivity/blob/master/ImportConnectomeData.m,
