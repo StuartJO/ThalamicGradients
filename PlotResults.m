@@ -58,8 +58,6 @@ writetable(SourceDataTable,['./SourceDataTables/FigS11c.xlsx'])
 SourceDataTable = cell2table([mCortROIs num2cell(mouse_pcs_cort(:,3))],'VariableNames',{'Cortical_ROI','mPC1_loading'},'RowNames',mCortROIs);
 writetable(SourceDataTable,['./SourceDataTables/FigS11d.xlsx'])
 
-
-
 %%
 
 disp('Getting neuromap figures')
@@ -88,9 +86,6 @@ for i = 1:3
    writetable(SourceDataTable,['./SourceDataTables/Fig',FigNumber{i},'.xlsx'])
    
 end
-
-
-
 
 %% Plot PC1 vs IT
 

@@ -4,9 +4,9 @@ main_decomp = load('./data/processed/main_decomp.mat');
 
 load('./data/processed/alt_decomps.mat','AltEmbedding')
 
-DecompType = {'Diffusion embedding','PCA on connectivity data only','PCA on gene-expression data only','PCA on connectivity and Phillips genes','PCA on first 10 connectvity and gene PCs','Diffusion embedding on mean affinity matrix'};
+DecompType = {'Diffusion embedding','PCA on gene-expression data only','PCA on connectivity data only','PCA on connectivity and Phillips genes','PCA on first 10 connectvity and gene PCs','Diffusion embedding on mean affinity matrix'};
 
-DecompTypeScatter = {{'','Diffusion embedding: PC1'},{'PCA on connectivity','data only: PC1'},{'PCA on gene-expression','data only: PC1'},{'PCA on connectivity and','Phillips genes: PC1'},{'PCA on first 10 connectvity','and gene PCs: PC1'},{'Diffusion embedding on mean','affinity matrix: PC1'}};
+DecompTypeScatter = {{'','Diffusion embedding: PC1'},{'PCA on gene-expression','data only: PC1'},{'PCA on connectivity','data only: PC1'},{'PCA on connectivity and','Phillips genes: PC1'},{'PCA on first 10 connectvity','and gene PCs: PC1'},{'Diffusion embedding on mean','affinity matrix: PC1'}};
 
 figure('Position',[0 0 1920 1080])
 

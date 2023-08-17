@@ -16,7 +16,7 @@ GeneIDs_burt_table = readtable('AHBAgeneSymbol.txt','ReadVariableNames',false);
 GeneIDs_burt = GeneIDs_burt_table.Var1;
 
 % Find the names of the genes that existed in Gryglewski et al and Burt et
-% al
+% al (i.e., the overlap)
 [~,GeneIDs_burt_Gryglewski_ind] = ismember(TractGeneData.GenesKept,EntrezIDs_all);
 
 GeneNames = GeneIDs_burt(GeneIDs_burt_Gryglewski_ind);

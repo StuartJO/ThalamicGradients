@@ -58,20 +58,18 @@ for i = 1:2
     hold on
     for j = 1:length(GenestrajID)
         IND = strcmp(traj.symbol, GenestrajID{j});
-        x = traj.age(IND);
-        y = traj.fit(IND);
+        AGE = traj.age(IND);
+        FIT = traj.fit(IND);
 
         % Map fitted values to colormap
-        plotcolor = MapData2Colors(max(y), plotcmap, enrichlimits);
+        plotcolor = MapData2Colors(max(FIT), plotcmap, enrichlimits);
 
         % Plot gene expression trajectory
-        pos_traj_plot(j) = plot(x, y, 'Color', [plotcolor, 1]);
+        pos_traj_plot(j) = plot(AGE, FIT, 'Color', [plotcolor, 1]);
 
-        FITS(:, j) = y;
+        FITS(:, j) = FIT;
 
     end
-
-    AGE = x;
 
     if i == 1
         % Create the NegTrajs table
