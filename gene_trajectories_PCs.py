@@ -4,7 +4,8 @@ import os
 
 SAVEDIR='./data/processed/gene_trajectories'
 
-#os.mkdir(SAVEDIR)
+if not os.path.isdir(SAVEDIR)
+    os.mkdir(SAVEDIR)
 
 # load temporal DEX genes from Li et al
 all_temporal_dex = pd.read_excel('data/gene_data/gene_lists/mRNA-seq.Temporal.DEX.xlsx')

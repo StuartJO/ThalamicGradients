@@ -17,7 +17,7 @@ import numpy as np
 PCs = ["PC1","PC2","PC3"]
 
 for PC in PCs:
-	base = Base(x="C:/Users/Stuart/Documents/ThalamicGradients/"+PC+"_thal.txt", D="C:/Users/Stuart/Documents/ThalamicGradients/dontupload/SeedDists.txt", resample=False, kernel='gaussian', nh=25, deltas=np.arange(0.1, 1, 0.1), pv=75)
+	base = Base(x="C:/Users/Stuart/Documents/ThalamicGradients/data/processed/"+PC+"_thal.txt", D="C:/Users/Stuart/Documents/ThalamicGradients/data/preprocessed/SeedDists.txt", resample=False, kernel='gaussian', nh=25, deltas=np.arange(0.1, 1, 0.1), pv=75)
 	surrogates = base(n=1000)
 	np.savetxt("C:/Users/Stuart/Documents/ThalamicGradients/thal_surrogates_"+PC+".csv", surrogates, delimiter=",")
 	print(PC)

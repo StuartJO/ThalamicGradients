@@ -12,7 +12,7 @@ Nseeds = length(dlmread(['seeds_',mm,'mm_ind.txt']));
 DATA = zeros(Nseeds,10);
 
 for i = 1:length(SUB)
-    DATAtemp = dlmread(['./SUBJECTS/',num2str(SUB(i)),'/masked_seed_ind_',mm,'mm_',type,'_rows_',num2str(SUB(i)),'.txt']);
+    DATAtemp = dlmread(['./data/tractography/SUBJECTS/',num2str(SUB(i)),'/masked_seed_ind_',mm,'mm_',type,'_rows_',num2str(SUB(i)),'.txt']);
     DATA(DATAtemp,i) = 1;
 end
 
@@ -51,15 +51,15 @@ SeedValid = sum(DATA,2)./length(GOOD_SUB);
 
 ValidSeed = SeedValid>SubThr;
 
-dlmwrite(['seeds_',mm,'mm_',type,'_seeds2use_',num2str(NSubValid),'subs_valid_bin.txt'],double(ValidSeed)')
-dlmwrite(['seeds_',mm,'mm_',type,'_seeds2use_',num2str(NSubValid),'subs_valid_thr.txt'],SeedValid')
+dlmwrite(['./data/preprocessing/seeds_',mm,'mm_',type,'_seeds2use_',num2str(NSubValid),'subs_valid_bin.txt'],double(ValidSeed)')
+dlmwrite(['./data/preprocessing/seeds_',mm,'mm_',type,'_seeds2use_',num2str(NSubValid),'subs_valid_thr.txt'],SeedValid')
 
 for i = 1:length(GOOD_SUB)
 
-    tracks = read_mrtrix_tracks(['./SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm_fsl.tck']);
+    tracks = read_mrtrix_tracks(['./data/tractography/SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm_fsl.tck']);
     tracts = tracks.data;
     valid_seeds = tracts(ValidSeed)';
-    dlmwrite(['./SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm.txt'],valid_seeds,'precision',20)
+    dlmwrite(['./data/tractography/SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm.txt'],valid_seeds,'precision',20)
 
 end
 

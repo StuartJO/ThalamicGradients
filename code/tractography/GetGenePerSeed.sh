@@ -2,17 +2,18 @@
 
 module load mrtrix
 
-DIR="/projects/kg98/stuarto/SeedReg"
+DIR="/projects/kg98/stuarto/ThalamicGradients"
+TRACTDIR="${DIR}/data/tractography"
 MM=1.75
 
-GENE_DIR="/projects/hf49/Stuart/AHBA_wholebrain"
-GENE_LIST="${DIR}/GenesKept.txt"
+GENE_DIR="${DIR}/data/AHBA_wholebrain"
+GENE_LIST="${DIR}/code/preprocessing/GenesKept.txt"
 
 ngene=$(wc -l ${GENE_LIST} | awk '{ print $1 }')
 
-SEED_GENEDATA_DIR="${DIR}/seeds_${MM}mm_tracts_gene"
+SEED_GENEDATA_DIR="${GENE_DIR}/seeds_${MM}mm_tracts_gene"
 
-SEEDS="${DIR}/seeds_${MM}mm_tracts.tck"
+SEEDS="${TRACTDIR}/seeds_${MM}mm_tracts.tck"
 echo "${ngene} genes"
 mkdir ${SEED_GENEDATA_DIR}
 

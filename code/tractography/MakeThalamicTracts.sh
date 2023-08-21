@@ -9,18 +9,21 @@
 #SBATCH --export=ALL
 #SBATCH --mem-per-cpu=12G
 #SBATCH --account=kg98
-#SBATCH --output=/fs02/kg98/stuarto/SeedReg/SLURM_OUTPUT/slurm-%j.out
+#SBATCH --output=/projects/kg98/stuarto/ThalamicGradients/SLURM_OUTPUT/slurm-%j.out
 
+# Note you mnay need to make the SLURM_OUTPUT directory
 module load mrtrix
 module load fsl
 
-#SUBJECT_LIST="/projects/kg98/stuarto/SeedReg/VALIDSEED_UnrelatedSubs.txt"
+## Below is how you run in in bash
+
+#SUBJECT_LIST="/projects/kg98/stuarto/ThalamicGradients/VALIDSEED_UnrelatedSubs.txt"
 #nsubs=$(wc -l ${SUBJECT_LIST} | awk '{ print $1 }')
-#for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./MakeTracts.sh $SUB; done
+#for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./MakeThalamicTracts.sh $SUB; done
 
 SUB=$1
 
-WORKDIR="/projects/kg98/stuarto/SeedReg/SUBJECTS/${SUB}"
+WORKDIR="/projects/kg98/stuarto/ThalamicGradients/data/tractography/SUBJECTS/${SUB}"
 SEEDS="${WORKDIR}/${SUB}_921seeds_1.75mm.txt"
 
 if [ ! -d "${WORKDIR}/tracts_921seeds/" ]; then

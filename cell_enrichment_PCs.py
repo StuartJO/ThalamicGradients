@@ -14,7 +14,8 @@ print(np.__version__)
 
 SAVEDIR='./data/processed/cell_enrichment'
 
-os.mkdir(SAVEDIR)
+if not os.path.isdir(SAVEDIR)
+    os.mkdir(SAVEDIR)
 
 # Some functions for gene enrichment analyses
 def calculate_enrichment(hit_list, top_genes, full_gene_list):
@@ -181,7 +182,7 @@ for OUTNAME in PCs:
 
 	#enrichment
 
-	enrichment.to_csv('data/processed/cell_enrichment_' + OUTNAME +'.csv')
+	enrichment.to_csv(SAVEDIR+'cell_enrichment_' + OUTNAME +'.csv')
 
 	# repeat the enrichment analysis focusing on neuronal subtypes
 	neuron_cell_data = cell_data[cell_data['Class'] == 'Neuron']
@@ -202,7 +203,7 @@ for OUTNAME in PCs:
 	neuron_enrichment['p<0.0001'] = neuron_enrichment['p']<0.0001
 	#neuron_enrichment
 
-	neuron_enrichment.to_csv('data/processed/neuron_enrichment_' + OUTNAME +'.csv')
+	neuron_enrichment.to_csv(SAVEDIR+'/neuron_enrichment_' + OUTNAME +'.csv')
 
 	for n, i in enumerate(list(neuron_cell_data['Cluster'])):
 		print('')

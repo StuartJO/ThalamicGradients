@@ -22,13 +22,13 @@ function decomp = RunPCADecomp(Input, seed_ind, TractInds, GeneInds)
 decomp = struct;
 
 % Store the original input data
-decomp.input = Input;
+decomp.pca_input = Input;
 
 % Perform PCA decomposition on the input data
 [decomp.coeff, decomp.score, ~, ~, decomp.explained] = pca(Input);
 
 % Load seed voxel coordinates and MNI coordinates
-load('./data/ancillary/MNI_Seed_voxelData.mat', 'seed_vox_coords', 'seed_mni_coords')
+load('./data/preprocessed/MNI_Seed_voxelData.mat', 'seed_vox_coords', 'seed_mni_coords')
 
 % Store the used seed voxel coordinates and MNI coordinates
 decomp.used_seed_voxel_coords = seed_vox_coords(logical(seed_ind), :);

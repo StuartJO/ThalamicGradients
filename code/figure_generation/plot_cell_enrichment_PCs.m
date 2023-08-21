@@ -454,6 +454,16 @@ end
 % Check if MakeTable flag is true
 if MakeTable
     
+    % Remove the output file if it exists because this causes issues when
+    % appending sheets
+    filename = TableOutput;
+    if exist(filename, 'file')
+        delete(filename);
+        disp(['File "', filename, '" deleted.']);
+    else
+        disp(['File "', filename, '" does not already exist']);
+    end
+    
     % Write EnrichTable to the specified Excel file, overwriting if necessary
     writetable(EnrichTable, TableOutput, 'WriteMode', 'overwrite', 'Sheet', 'CellClassEnrichment')
     

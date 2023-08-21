@@ -36,7 +36,7 @@ GeneIDs_thal_complete = geneInfo.acronym(~NanGenes);
 
 GeneIDs_thal_complete_phillips_idx = find(ismember(upper(GeneIDs_thal_complete), upper(GeneIDs_phillips)));
 
-mouse_GeneNames = GeneIDs_thal_complete(GeneIDs_thal_complete_phillips_idx);
+GeneNames_mouse = GeneIDs_thal_complete(GeneIDs_thal_complete_phillips_idx);
 
 % Extract connectivity and expression for thalamic regions
 
@@ -56,4 +56,9 @@ mouse_pcs_thal = zscore(mouse_score);
 mouse_pcs_cort = zscore(mouse_coeff(1:38,:));
 mouse_pcs_gene = zscore(mouse_coeff(39:end,:));
 
-save('./data/processed/mouse_decomp.mat','mouse_coeff','mouse_score','mouse_explained','mouse_GeneNames','mouse_pcs_thal','mouse_pcs_cort','mouse_pcs_gene')
+mouse_pca_input = mouse_TractData_GeneData_norm;
+
+mThalROIs = structInfo.acronym(ThalRegions);
+mCortROIs = structInfo.acronym(CortRegions);
+
+save('./data/processed/mouse_decomp.mat','mouse_coeff','mouse_score','mouse_explained','GeneNames_mouse','mouse_pcs_thal','mouse_pcs_cort','mouse_pcs_gene','mouse_pca_input','mThalROIs','mCortROIs')

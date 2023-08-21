@@ -3,11 +3,13 @@
 module load mrtrix
 
 # Set directory where to save data
-DIR="/projects/hf49/Stuart/AHBA_wholebrain"
+DIR="/projects/kg98/stuarto/ThalamicGradients/data/AHBA_wholebrain"
+
+GENE_LIST_DIR="/projects/kg98/stuarto/ThalamicGradients/code/preprocessing"
 #DIR=$1
 
 # Location of genes according to Entrez ID
-GENE_LIST="${DIR}/AHBAEntrez.txt"
+GENE_LIST="${GENE_LIST_DIR}/AHBAEntrez.txt"
 #GENE_LIST=$2
 
 # Set to 1 to put the data in compressed format. If compressed it will use up less space (duhhh) but if trying to access the data it will take longer.
@@ -34,7 +36,6 @@ mkdir ${GeneDir}
 unzip ${GeneDir}/${ID}.zip -d ${GeneDir}/${ID}
 
 rm ${GeneDir}/${ID}.zip
-
 
 if [ "${USE_MRTRIX}" == 1 ]; then
 if [ "${COMPRESS}" == 1 ]; then

@@ -67,8 +67,8 @@ for XYZ = 1:3
                    'FontSize', 32, 'EdgeColor', 'none');
     
     % Save figures as PNG and SVG
-    print([SavePreFix, '_', annotlabels{XYZ}, '.png'], '-dpng', '-r300')
-    print([SavePreFix, '_', annotlabels{XYZ}, '.svg'], '-dsvg')
+    print([SavePreFix,annotlabels{XYZ}, '.png'], '-dpng', '-r300')
+    print([SavePreFix,annotlabels{XYZ}, '.svg'], '-dsvg')
 end
 
 end

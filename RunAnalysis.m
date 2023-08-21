@@ -1,3 +1,6 @@
+
+addpath(genpath('./'))
+
 TractGeneData = load('CompiledTractGeneData.mat');
 CompiledTractData = PrepareTractGeneData(TractGeneData);
 
@@ -15,10 +18,10 @@ for i = 1:3
 writematrix(decomp.score(:,i),['./data/processed/PC',num2str(i),'_thal.txt'],'Delimiter',' ')
 end
 
-load('./data/ancillary/MNI_Seed_voxelData.mat','seed_vox_coords')
+load('./data/preprocessed/MNI_Seed_voxelData.mat','seed_vox_coords')
 
 SeedDists = squareform(pdist(seed_vox_coords(logical(TractGeneData.seed_ind),:)));
-writematrix(SeedDists,'SeedDists.txt','Delimiter',' ')
+writematrix(SeedDists,'./data/processed/SeedDists.txt','Delimiter',' ')
 
 %%
 TractGeneData = load('CompiledTractGeneData_AllGeneSeed.mat');
@@ -69,6 +72,7 @@ end
 
 %%
 
+% Uncomment the line below to remake the cortical spin test. Will take ages
 %GetCorticalSpinTestPerms()
 
 for i = 1:3
@@ -138,7 +142,7 @@ end
 tract_decomp = RunPCADecomp(CompiledTractData.TractData_norm,CompiledTractData.seed_ind,1:250,[]);
 save('./data/processed/decomp_TractOnly.mat','-struct','tract_decomp')
 
-save('Bootstrap_results.mat','coeffPC1_boot','scorePC1_boot','expl_boot','coeffPC1_boot_tract','scorePC1_boot_tract','expl_boot_tract')
+save('./data/processed/Bootstrap_results.mat','coeffPC1_boot','scorePC1_boot','expl_boot','coeffPC1_boot_tract','scorePC1_boot_tract','expl_boot_tract')
 %% Leave-one-out
 
 h = waitbar(0,'Please wait...');
@@ -168,4 +172,4 @@ end
 
 RMSE = sqrt(nanmean((main_decomp.score(:,1) - scoresCV).^2)); % Root Mean Squared Error
 
-save('loocv_result.mat','RMSE','scoresCV')
+save('./data/processed/loocv_result.mat','RMSE','scoresCV')
