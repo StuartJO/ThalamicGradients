@@ -8,10 +8,13 @@ Note that almost all of this code assumes relative paths based on running code f
 
 The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography data).
 
+Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the HCP website
 
 ## Remaking all figures
 
-In MATLAB run
+In MATLAB run:
+
+
 
 
 This will take around 20 minutes to run (with 75% of that just being the time it takes to save a generated plot).
@@ -111,7 +114,7 @@ Go to the following [link](https://doi.org/10.5281/zenodo.4609603) and download 
 
 ### DropViz data
 
-Use this [link](http://dropviz.org/?_state_id_=061c47a2583ad172) to get the parameters to download the DropViz data. Note this link also uses all the same parameters we used.
+Use this [link](http://dropviz.org/?_state_id_=061c47a2583ad172) to go to the DropViz data and use all the parameters we used.
 
 Under the "Target cluster" dropdown menu, load in a cluster. The table in the bottom of the webpage (called "Differentially Over-Expressed") will then update. There is a download button next to the header, use that to download the data. Repeat for all the clusters. This gives all the cell classes (we renamed each file according to the name of each cluster e.g.,"TH Fibroblast-Like_Dcn [#6]" would be named "TH_Fibroblast-Like_Dcn.csv". Note we made additional clusters by combining all neuron clusters into a single file, and combining all the oligodendrocyte clusters into a single file (with the "_ALL" suffix added.)
 
@@ -135,7 +138,7 @@ Go to this link http://development.psychencode.org/#
 Under "Raw data", click "mRNA-seq" and download the Sample Metadata file
 
 Under "Processed Data", click "mRNA-seq" and download the QC info, Gene expression in counts, Gene expression in RPKM, and Spatially differential expressed genes files.
-# (Also under "Processed Data", click "Single cell/nucleus RNA-seq", and download all the Prenatal Single cell RNA-seq files (Sample QC; Gene expression CPM, counts and cell type cluster; Cell type signatures))
+<!-- (Also under "Processed Data", click "Single cell/nucleus RNA-seq", and download all the Prenatal Single cell RNA-seq files (Sample QC; Gene expression CPM, counts and cell type cluster; Cell type signatures)) -->
 
 ### Human Protein Atlas
 

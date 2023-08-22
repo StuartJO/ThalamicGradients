@@ -1,5 +1,8 @@
-Mdisease=readtable('SupplementaryTable5.xlsx');
-Ldisease=readtable('SupplementaryTable5.xlsx','Sheet',2);
+% This was used for just making a quick plot of the disease enrichment
+% results for PC1, I used it for a presentation. The paper has enough plots
+
+Mdisease=readtable('SupplementaryTable11.xlsx');
+Ldisease=readtable('SupplementaryTable11.xlsx','Sheet',2);
 
 bar_cmap = brewermap(256,'RdBu');
 
