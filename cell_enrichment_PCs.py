@@ -77,10 +77,10 @@ def run_enrichment_percentile(classes, gene_lists, test_genes, background_genes)
     return results
 
 # load Ensembl human-mouse genes
-all_homologs = pd.read_csv('data/gene_data/gene_lists/mart_export.txt', delimiter='\t')
+all_homologs = pd.read_csv('./data/gene_data/gene_lists/mart_export.txt', delimiter='\t')
 
 # load genes expressed in human thalamus and filter homologs
-thalamus_proteins = pd.read_csv('data/gene_data/gene_lists/human_thalamus_protein.tsv', delimiter='\t', low_memory=False)
+thalamus_proteins = pd.read_csv('./data/gene_data/gene_lists/human_thalamus_protein.tsv', delimiter='\t', low_memory=False)
 thalamus_proteins = thalamus_proteins['Gene']
 
 all_homologs = all_homologs[all_homologs['Gene name'].isin(list(thalamus_proteins))]
@@ -102,7 +102,7 @@ thalamic_cell_genes = list(thalamic_cell_genes[thalamic_cell_genes.isin(mouse_ho
 print('The total number of background genes (measured in mouse thalamus using Drop-seq with human homologs also expressed in human thalamus):\n{:}'.format(len(thalamic_cell_genes)))
 
 # get cell type data
-cell_data = pd.read_csv('data/gene_data/gene_lists/thalamus_cell_cluster_types.csv', delimiter='\t')
+cell_data = pd.read_csv('./data/gene_data/gene_lists/thalamus_cell_cluster_types.csv', delimiter='\t')
 cell_data
 
 # load differentially expressed gene lists from DropViz for each cell type
@@ -129,7 +129,7 @@ for n,i in enumerate(cell_class):
     print('{:}: {:} genes'.format(i, len(cell_class_lists[n])))
 
 # gene lists for each neuronal subcluster
-cluster_lists =  sorted(glob.glob('data/gene_data/gene_lists/subclusters/*csv'))
+cluster_lists =  sorted(glob.glob('./data/gene_data/gene_lists/subclusters/*csv'))
 #print(cluster_lists)
 # name for each cluster
 cluster_names = [('Cluster '+ s.split('\\')[-1].split('.')[0]) for s in cluster_lists]
@@ -143,7 +143,7 @@ cluster_genes = [list(pd.read_csv(s)['gene']) for s in cluster_lists]
 filtered_cluster_genes = [list(set(s) & set(thalamic_cell_genes)) for s in cluster_genes]
 
 # all genes expressed by neuron class
-neuron_genes = pd.read_csv('data/gene_data/gene_lists/all-neuronal-genes.csv')['gene']
+neuron_genes = pd.read_csv('./data/gene_data/gene_lists/all-neuronal-genes.csv')['gene']
 # filter out any not in thalamic background
 neuron_genes = neuron_genes[neuron_genes.isin(thalamic_cell_genes)]
 
@@ -155,7 +155,7 @@ for OUTNAME in PCs:
 
 	# PC+ and PC- genes - change for the updated list of 100
 	# load top 100
-	positive_genes = pd.read_csv('data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+	positive_genes = pd.read_csv('./data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
 	# identify homologs
 	positive_homologs = all_homologs[all_homologs['Gene name'].isin(list(positive_genes))]['Mouse gene name'].dropna()
 	# remove any not in background
@@ -167,7 +167,7 @@ for OUTNAME in PCs:
 	print('')
 
 	# as above but for bottom 100
-	negative_genes = pd.read_csv('data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+	negative_genes = pd.read_csv('./data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
 	negative_homologs = all_homologs[all_homologs['Gene name'].isin(list(negative_genes))]['Mouse gene name'].dropna()
 	filtered_negative_homologs = list(set(negative_homologs) & set(thalamic_cell_genes))
 

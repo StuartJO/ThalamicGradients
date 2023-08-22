@@ -8,7 +8,7 @@ if not os.path.isdir(SAVEDIR)
     os.mkdir(SAVEDIR)
 
 # load temporal DEX genes from Li et al
-all_temporal_dex = pd.read_excel('data/gene_data/gene_lists/mRNA-seq.Temporal.DEX.xlsx')
+all_temporal_dex = pd.read_excel('./data/gene_data/gene_lists/mRNA-seq.Temporal.DEX.xlsx')
 
 # keep only the thalamic data
 md_temporal = all_temporal_dex.loc[:,all_temporal_dex.columns[all_temporal_dex.columns.str.contains('MD')]]
@@ -54,7 +54,7 @@ md_temporal_dex.insert(1, column='symbol', value=md_temporal_dex['Geneid'].str.s
 md_temporal_dex_genes = list(md_temporal_dex['symbol'].unique())
 
 # collect gene trajectories (calculated across all PsychENCODE samples)
-trajectories = pd.read_csv('data/gene_data/gene_trajectories/data-gene-data-modelled-no-age.csv')
+trajectories = pd.read_csv('./data/gene_data/gene_trajectories/data-gene-data-modelled-no-age.csv')
 trajectories = trajectories[trajectories.region=='MD']
 
 PCs=['PC1','PC2','PC3']
@@ -64,10 +64,10 @@ PCs=['PC1','PC2','PC3']
 for OUTNAME in PCs:
 
     # collect top 100 positive and top 100 negative
-    positive = pd.read_csv('data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
-    negative = pd.read_csv('data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+    positive = pd.read_csv('./data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+    negative = pd.read_csv('./data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
     # PC
-    all_genes = pd.read_csv('data/gene_data/gene_lists/AllHumanSpinTested.csv', header=None)
+    all_genes = pd.read_csv('./data/gene_data/gene_lists/AllHumanSpinTested.csv', header=None)
     all_genes.columns = ['gene', 'pc','p']
 
     # how many are also temporal DEX genes?
@@ -100,11 +100,11 @@ for OUTNAME in PCs:
 
     # load mouse cell genes list
     # load Ensembl human-mouse genes
-    all_homologs = pd.read_csv('data/gene_data/gene_lists/mart_export.txt', delimiter='\t')
-    neuron_lists = pd.read_csv('data/gene_data/gene_lists/TH_Neuron_ALL.csv')['gene']
-    glial_lists = pd.concat((pd.read_csv('data/gene_data/gene_lists/TH_Astrocyte_Gja1.csv'), 
-                             pd.read_csv('data/gene_data/gene_lists/TH_Oligodendrocyte_ALL.csv'), 
-                             pd.read_csv('data/gene_data/gene_lists/TH_Ependyma.csv')))['gene'].unique()
+    all_homologs = pd.read_csv('./data/gene_data/gene_lists/mart_export.txt', delimiter='\t')
+    neuron_lists = pd.read_csv('./data/gene_data/gene_lists/TH_Neuron_ALL.csv')['gene']
+    glial_lists = pd.concat((pd.read_csv('./data/gene_data/gene_lists/TH_Astrocyte_Gja1.csv'), 
+                             pd.read_csv('./data/gene_data/gene_lists/TH_Oligodendrocyte_ALL.csv'), 
+                             pd.read_csv('./data/gene_data/gene_lists/TH_Ependyma.csv')))['gene'].unique()
 
     # get human homologs
     neuron_homologs = all_homologs[all_homologs['Mouse gene name'].isin(list(neuron_lists))]['Gene name'].dropna()
