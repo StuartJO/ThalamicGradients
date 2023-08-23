@@ -2,7 +2,7 @@
 
 module load mrtrix
 
-DIR="/projects/kg98/stuarto/ThalamicGradients"
+DIR="."
 TRACTDIR="${DIR}/data/tractography"
 MM=1.75
 

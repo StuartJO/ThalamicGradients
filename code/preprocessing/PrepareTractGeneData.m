@@ -22,7 +22,7 @@ GeneIDs_burt = GeneIDs_burt_table.Var1;
 GeneNames = GeneIDs_burt(GeneIDs_burt_Gryglewski_ind);
 
 TractData_norm = BF_NormalizeMatrix(TractGeneData.ThalSeedAvg,'scaledSigmoid');
-GeneData_norm = BF_NormalizeMatrix(TractGeneData.SeedGene_kept,'scaledSigmoid');
+GeneData_norm = BF_NormalizeMatrix(TractGeneData.ThalSeedGenesKept,'scaledSigmoid');
 
 load('./data/preprocessed/MNI_Seed_voxelData.mat','seed_vox_coords','seed_mni_coords')
 

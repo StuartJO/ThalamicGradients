@@ -1,14 +1,14 @@
 load('./data/processed/main_decomp.mat')
 
-data = input;
+data = pca_input;
 d = squareform(pdist(data));
 seed_linkage = linkage(data,'ward');
 seed_order = optimalleaforder(seed_linkage,d);
-tract_data = input(:,1:250);
+tract_data = pca_input(:,1:250);
 d = squareform(pdist(tract_data'));
 tract_linkage = linkage(tract_data','ward');
 tract_order = optimalleaforder(tract_linkage,d);
-gene_data = input(:,251:end);
+gene_data = pca_input(:,251:end);
 d = squareform(pdist(gene_data'));
 gene_linkage = linkage(gene_data','ward');
 gene_order = optimalleaforder(gene_linkage,d);

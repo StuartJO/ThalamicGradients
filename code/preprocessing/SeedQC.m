@@ -8,7 +8,7 @@ SubThr = .85;
 
 SUB = dlmread('UnrelatedSubs.txt');
 
-Nseeds = length(dlmread(['seeds_',mm,'mm_ind.txt']));
+Nseeds = length(dlmread(['./data/preprocessed/seeds_',mm,'mm_ind.txt']));
 DATA = zeros(Nseeds,10);
 
 for i = 1:length(SUB)
@@ -59,8 +59,11 @@ for i = 1:length(GOOD_SUB)
     tracks = read_mrtrix_tracks(['./data/tractography/SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm_fsl.tck']);
     tracts = tracks.data;
     valid_seeds = tracts(ValidSeed)';
+    allGeneSeeds = tracts(InGeneLogical)';
     dlmwrite(['./data/tractography/SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_seeds_',mm,'mm.txt'],valid_seeds,'precision',20)
 
+    dlmwrite(['./data/tractography/SUBJECTS/',num2str(GOOD_SUB(i)),'/',num2str(GOOD_SUB(i)),'_ALLGENEseeds_',mm,'mm.txt'],allGeneSeeds,'precision',20)
 end
 
 dlmwrite('VALIDSEED_UnrelatedSubs.txt',GOOD_SUB,'precision',6)
+

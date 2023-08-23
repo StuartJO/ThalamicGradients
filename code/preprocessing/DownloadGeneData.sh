@@ -3,9 +3,9 @@
 module load mrtrix
 
 # Set directory where to save data
-DIR="/projects/kg98/stuarto/ThalamicGradients/data/AHBA_wholebrain"
+DIR="./data/AHBA_wholebrain"
 
-GENE_LIST_DIR="/projects/kg98/stuarto/ThalamicGradients/code/preprocessing"
+GENE_LIST_DIR="./code/preprocessing"
 #DIR=$1
 
 # Location of genes according to Entrez ID
