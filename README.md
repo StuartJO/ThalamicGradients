@@ -26,24 +26,63 @@ The plots were then combined seperately in Inkscape
 To run the data through [WebGestalt](https://www.webgestalt.org/), set it up with the following parameters:
 
 Organism of Interest = Homo sapiens
+
 Method of Interest = Over-Representation Analysis (ORA)
 
 PCX_HumanMostPositiveSpinTested.txt
+
 PCX_HumanMostNegativeSpinTested.txt
 
 ## Running from the start
 
 If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source). The one exception is I don't detail how to process the HCP data 
 
-### Making seeds, and getting gene-expression and connectivity
+## Processing diffusion data
+
+ Making seeds, and getting gene-expression and connectivity
 
 The code doesn't include the raw diffusion or gene-expression data because that would use up far too much space.
 
-The basic steps that were applied to the HCP data are as follows
+The basic steps that were applied to the (minimally preprocessed) HCP data are as follows
 
-5ttgen -tempdir ${WORKDIR} fsl ${T1} ${WORKDIR}/ACT.nii -premasked
+```
+mrconvert data.nii.gz dwi.mif -fslgrad bvecs bvals -datatype float32 -stride 0,0,0,1
+
+5ttgen -tempdir ./ fsl T1w_acpc_dc_restore_brain.nii.gz ./ACT.nii -premasked -nocrop
+
+dwi2response -tempdir ./ msmt_5tt dwi.mif ACT.nii RF_WM.txt RF_GM.txt RF_CSF.txt -voxels RF_voxels.mif
+
+dwi2fod msmt_csd dwi.mif RF_WM.txt FOD.mif RF_GM.txt GM.mif RF_CSF.txt csf.mif -mask nodif_brain_mask.nii.gz
+
+```
+
+## Making the parcellation
 
 If you did want to run things from scratch you need to have a parcellation registered to each individual (as a nifti volume) and for it to be aligned with the individuals diffusion space (which should be easy for HCP data).
+
+In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory call "custom" which contains all the data for fsaverage. In the "label" file you'll need to add the .annot files included under ./data/parcellation
+
+Note because some voxels in the left and right hemisphere could be mislabelled as belowing to the other hemisphere, we do a manual correction for this (Parc_correct_mislabel.m)
+
+```
+mri_surf2surf --srcsubject custom --hemi lh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/lh.${CORTICAL_PARC}.annot
+
+mri_surf2surf --srcsubject custom --hemi rh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/rh.${CORTICAL_PARC}.annot
+
+mri_aparc2aseg --s ${SUBJECTID}/T1w/${SUBJECTID} --o ${WORKDIR}/${CORTICAL_PARC}+aseg.mgz --new-ribbon --annot ${CORTICAL_PARC}
+
+mri_label2vol --seg ${WORKDIR}/${CORTICAL_PARC}+aseg.mgz --temp ${HCPPARENTDIR}/${SUBJECTID}/T1w/T1w_acpc_dc_restore_brain.nii.gz --o ${WORKDIR}/${CORTICAL_PARC}_label2vol.nii --regheader ${WORKDIR}/${CORTICAL_PARC}+aseg.mgz
+
+mrconvert ${WORKDIR}/${CORTICAL_PARC}_label2vol.nii ${WORKDIR}/${CORTICAL_PARC}_uncorr.nii -stride -1,2,3
+
+matlab -nodisplay -nosplash -r "WheresMyScript='${HCPSCRIPTS}/Functions'; addpath(genpath(WheresMyScript)); ConfigureParc('${WORKDIR}/${CORTICAL_PARC}_uncorr.nii',${PARCS},'${WORKDIR}/${CORTICAL_PARC}_acpc_uncorr.nii'); exit"
+
+mrconvert ${HCPPARENTDIR}/${SUBJECTID}/T1w/ribbon.nii.gz ${WORKDIR}/ribbon_expanded.nii -stride -1,2,3
+
+matlab -nodisplay -nosplash -r "WheresMyScript='${HCPSCRIPTS}/Functions'; addpath(genpath(WheresMyScript)); Parc_correct_mislabel('${WORKDIR}/${CORTICAL_PARC}_acpc_uncorr.nii','${WORKDIR}/ribbon_expanded.nii',${L_cort},${R_cort},'${WORKDIR}/${CORTICAL_PARC}_acpc.nii'); exit"
+```
+
+## Downloading the gene-expression data
 
 First we need all of the gene-expression data so run
 
@@ -52,8 +91,11 @@ DownloadGeneData.sh
 ```
 
 We also need a mask from the gene data. Using any of the 'X_mRNA.nii' files (I used gene number 12; but they should all give the exact same result) do the following:
-
+```
 fslmaths 12_mRNA.nii -bin GeneMask.nii.gz 
+```
+
+## Making seeds
 
 To generate the seeds run the following in bash:
 
@@ -72,6 +114,7 @@ SUBJECT_LIST="/projects/kg98/stuarto/ThalamicGradients/VALIDSEED_UnrelatedSubs.t
 nsubs=$(wc -l ${SUBJECT_LIST} | awk '{ print $1 }')
 for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./MakeThalamicTracts.sh $SUB; done
 ```
+
 ## Making ancillary and other preprocessed data
 
 I also provide ancillary data (which I define as data largely used to help plotting or assist other functions) already formatted, but if you wanted to create some of this from scratch, please run in MATLAB
@@ -90,11 +133,15 @@ Then to get a nifti file of the Allen Mouse Brain Atlas, go to the [Scalable Bra
 ### Getting mouse cortical features
 
 To get these, you need to download [this](https://github.com/benfulcher/mouseGradients) GitHub repository, download the required data (found [here](https://figshare.com/articles/dataset/Mouse_cortical_gradients/7775684/1)) and follow the instructions to run the code. To get the final output ('Data_AMBAcortex.mat') run the following in MATLAB
-
+```
 load('mouseGradients/DataOutputs/BigDamnMatrix.mat')
 save('Data_AMBAcortex.mat','allProperties','dataMatrix','structInfo')
+```
+Then put 'Data_AMBAcortex.mat'  in ./data/preprocessed
 
-Then put 'Data_AMBAcortex.mat'  in ./data/preprocessed 
+### Mouse brain hierarchy
+
+We used an updated version of the brain hierarchy data used in the above. The file can be downloaded [here](https://github.com/AllenInstitute/MouseBrainHierarchy/blob/master/Output/TCCT_CCconf_iter.xls). Put it in ./data/preprocessed
 
 ### Getting neuromaps data
 
@@ -103,7 +150,7 @@ In python, run
 ```
 GetNeuroMaps.py
 ```
-Note you need the [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) to be installed for the above to work.
+Note you need the [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) to be installed for the above to work. This will download all the maps in the _current_ neuromaps release, so might not get the original 72 I used.
 
 I manually a seperate Excel file which gives the metadata about each brain map, using [this](https://docs.google.com/spreadsheets/d/1oZecOsvtQEh5pQkIf8cB6CyhPKVrQuko/edit#gid=1162991686) as a reference.
 
@@ -122,9 +169,9 @@ Next, up the top click the "Subclusters" header. Under the "Target Subcluster" d
 
 To get the TSNE coordinates, make sure you have selected the "Subclusters" tab and click the "tSNE" button underneath. Then click the "Display" tab in the Parameters box. Under "t-SNE Plot Settings", set the "Downsample Cell" to "Show all". Then click the download button up the top (or just click this link
 
-To convert this to an Excel spreadsheet, unzip it and the run the following R commands:
+To convert this to an Excel spreadsheet, unzip it and the run the following commands in R:
 ```
-library("writexl")
+library("writexl") # Might need to install this module
 load("tsne_sub.Rdata")
 write_xlsx(xy.data,"tsne_subdata.xlsx")
 ```
@@ -148,12 +195,12 @@ You can also download the .tsv file directly from the following [link](https://v
 
 Note that we used v21.1 of the Human Protein Atlas. Now the atlas is up to version 23.0 (as of 22 August 2023) and has found an extra ~2000 genes expressed in the thalamus! As an exercise for the reader they could download this new list and see how things replicate!
 
-## Homologue mouse-human genbes from Ensembl Biomart
+### Homolog mouse-human genes from Ensembl Biomart
 
 If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba815796782ab3e8bc620b?VIRTUALSCHEMANAME=default&ATTRIBUTES=hsapiens_gene_ensembl.default.homologs.ensembl_gene_id|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_ensembl_gene|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_associated_gene_name|hsapiens_gene_ensembl.default.homologs.external_gene_name&FILTERS=&VISIBLEPANEL=attributepanel), it will set up all the parameters (in the correct order as well) for you to download (download by setting "Export all results to" to "File" and "CSV", then click go and it will download a txt file) 
 
-## FreeSurfer and FSL data
+### FreeSurfer and FSL data
 
 Just have FreeSurfer and FSL installed. The code should pick up things for FSL. For FreeSurfer you'll need to dig through and extract the surface files (e.g., inflated, white, pial, sphere .etc) from whereever the fsaverage 164k surface is.
 
-## Melbourne subcortical atlas
+### Melbourne subcortical atlas
