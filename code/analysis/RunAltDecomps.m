@@ -4,7 +4,7 @@ function [AltEmbedding, DecompName] = RunAltDecomps()
 %% Load in data
 
 % Load compiled tract and gene data
-load('./data/preprocessed/CompiledTractGeneData.mat','GenesKept','ThalSeedAvg','SeedGene_kept')
+load('./data/preprocessed/CompiledTractGeneData_Rand500.mat','GenesKept','ThalSeedAvg','ThalSeedGenesKept')
 
 % Load gene names and IDs from Burt et al., 2020 Nature Neuroscience
 EntrezIDs_all = dlmread('./data/preprocessed/AHBAEntrez.txt');
@@ -23,7 +23,7 @@ PhillipsMouse_HumanGenesOverlap_idx = ismember(GeneIDs_valid, PhillipsMouseGenes
 
 % Normalize tract and gene data
 TractData_norm = BF_NormalizeMatrix(ThalSeedAvg(:, 1:250), 'scaledSigmoid');
-GeneData_norm = BF_NormalizeMatrix(SeedGene_kept, 'scaledSigmoid');
+GeneData_norm = BF_NormalizeMatrix(ThalSeedGenesKept, 'scaledSigmoid');
 TractData_GeneData_norm = [TractData_norm GeneData_norm];
 
 AltEmbedding = cell(1,6);

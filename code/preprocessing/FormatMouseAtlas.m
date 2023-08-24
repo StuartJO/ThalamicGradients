@@ -14,12 +14,12 @@ CCFv3_annots = Get_CCFv3_annots;
 % This gives what the ID of the Oh parcellation is in the CCFv3 atlas
 mouse_CCFv3_id = CCFv3_annots.ID(idx);
 
-gunzip('./data/ancillary/P56_Annotation.nii.gz','./data/ancillary')
+%gunzip('./data/ancillary/P56_Annotation.nii.gz','./data/ancillary')
 
-MouseAtlas = double(niftiread('./data/ancillary/P56_Annotation.nii'));
+MouseAtlas = double(niftiread('./data/ancillary/P56_Annotation.nii.gz'));
 
 % Lets keep storage down
-delete('./data/ancillary/P56_Annotation.nii')
+%delete('./data/ancillary/P56_Annotation.nii')
   
 % Because the voxel IDs in MouseAtlas are labelled according to the most
 % fine grained areas in a region, we need to find all the regions which
@@ -73,10 +73,10 @@ save('./data/ancillary/MouseOhParc.mat','MouseOhParc')
 
 %% Get the nifti data from the compressed file
 
-gunzip('./data/ancillary/P56_Atlas.nii.gz','./data/ancillary')
+%gunzip('./data/ancillary/P56_Atlas.nii.gz','./data/ancillary')
 
-MouseBrain = double(niftiread('./data/ancillary/P56_Atlas.nii'));
+MouseBrain = double(niftiread('./data/ancillary/P56_Atlas.nii.gz'));
 save('./data/ancillary/MouseBrain.mat','MouseBrain')
 
 % The uncompressed data is deleted to save space
-delete('./data/ancillary/P56_Atlas.nii')
+%delete('./data/ancillary/P56_Atlas.nii')

@@ -1,11 +1,13 @@
 
+%% This script makes all the figures
+
 load('./data/processed/mouse_decomp.mat')
 load('./data/processed/main_decomp.mat')
 %load('./data/preprocessed/AllenGeneDataset_19419.mat','structInfo')
 
 mkdir ./SourceDataTables
 mkdir ./SupplementaryTables
-
+mkdir ./figure_outputs
 %warning('off',w.identifier)
 
 %% Plot PC1, 2, and 3 for different decompositions (Figs: 2a, 3a, S2, S6, S15
@@ -18,8 +20,8 @@ disp('Plot human PC results')
 
 decomp = load('./data/processed/main_decomp.mat');
 load('./data/ancillary/fsaverage_surface_data.mat')
-mkdir ./figure_outputs/Rand250_PCs
-Plot_PC123(decomp,lh_rand500,'Rand250_PCs')
+mkdir ./figure_outputs/Rand500_PCs
+Plot_PC123(decomp,lh_rand500,'Rand500_PCs')
 
 mkdir ./figure_outputs/MNIcorr
 PlotPCs_vs_MNI(decomp,1,{'a','b','c'},'./figure_outputs/MNIcorr/');
@@ -64,7 +66,7 @@ mkdir './figure_outputs/mPCs'
 for i = 1:3
     zscore_mouse_pcs_thals = zscore(mouse_score(:,i));
     MouseThalPlotted = changem(MouseThalOnly,zscore_mouse_pcs_thals,ThalRegions);
-    PlotMouseThalGradientAlt(MouseThalPlotted,MouseBrain,turbo(256),['Thalamic mouse PC',num2str(i),' score']);
+    PlotMouseThalGradient(MouseThalPlotted,MouseBrain,turbo(256),['Thalamic mouse PC',num2str(i),' score']);
     exportgraphics(gcf,['./figure_outputs/mPCs/mPC',num2str(i),'_thal.png'],'Resolution',300)
     print(['./figure_outputs/mPCs/mPC',num2str(i),'_thal.svg'],'-dsvg','-r300')
         
@@ -74,7 +76,7 @@ end
 
 disp('Plot comparison of human, mouse, and Phillips genes')
 
-TractGeneNorm = load('./data/processed/TractGeneNorm.mat');
+TractGeneNorm = load('./data/processed/TractGeneNorm_rand500.mat');
 
 GeneNames_human = TractGeneNorm.GeneNames_human;
 
@@ -481,7 +483,7 @@ writetable(SourceDataTable,'./SourceDataTables/FigS4.xlsx')
 
 %% Make Fig. S5
 
-MainGeneSeed = load('./data/processed/TractGeneNorm.mat');
+MainGeneSeed = load('./data/processed/TractGeneNorm_rand500.mat');
 AllGeneSeed = load('./data/processed/TractGeneNorm_AllGeneSeed.mat');
 
 load('./data/preprocessed/MNI_Seed_voxelData.mat','seed_vox_coords','seed_mni_coords')
@@ -694,7 +696,7 @@ end
 
 %% Compare human and mouse genes for PCs 1-3 (Fig S13)
 
-TractGeneNorm = load('./data/processed/TractGeneNorm.mat');
+TractGeneNorm = load('./data/processed/TractGeneNorm_rand500.mat');
 
 GeneNames_human = TractGeneNorm.GeneNames_human;
 

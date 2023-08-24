@@ -29,7 +29,7 @@ close all
 mkdir ./figure_outputs/AltDecomps/
 
 for i = 1:6
-    PlotThalGradientSlicesAlt(zscore(AltEmbedding{i}(:,1)),main_decomp.used_seed_voxel_coords,cmap,[DecompType{i},': PC1 score'],2.1);
+    PlotThalGradientSlices(zscore(AltEmbedding{i}(:,1)),main_decomp.used_seed_voxel_coords,cmap,[DecompType{i},': PC1 score'],2.1);
     print(['./figure_outputs/AltDecomps/Decomp',num2str(i),'.png'],'-dpng','-r300')
     print(['./figure_outputs/AltDecomps/Decomp',num2str(i),'.svg'],'-dsvg','-r300')
        

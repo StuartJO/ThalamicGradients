@@ -93,8 +93,8 @@ totalTractLengths = 0;
 % Loop through all seeds for example tracks
 for j = 1:921
     % Load example tracks and associated ROI assignments
-    tracks = read_mrtrix_tracks(['./data/ExampleTracks/MNI/seed_', num2str(j), '.tck']);
-    ROI = dlmread(['./data/ExampleTracks/conn/seed_', num2str(j), '_assignments']);
+    tracks = read_mrtrix_tracks(['./data/ExampleTracts/MNI/seed_', num2str(j), '.tck']);
+    ROI = dlmread(['./data/ExampleTracts/conn/seed_', num2str(j), '_assignments']);
     tracks_data = tracks.data;
     Ntracks = length(tracks_data);
     Tracklen = zeros(length(tracks_data), 1);

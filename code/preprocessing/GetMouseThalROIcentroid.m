@@ -63,5 +63,5 @@ end
 if Simple == 0
     save('./data/ancillary/MouseThalROICoords.mat', 'MouseThalROICoords')
 else
-    save('./data/ancillary/MouseThalROICoords_COG.mat', 'MouseThalROICoords')
+    save('./data/ancillary/MouseThalROICoords_simple.mat', 'MouseThalROICoords')
 end

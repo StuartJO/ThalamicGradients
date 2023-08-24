@@ -13,7 +13,7 @@ for grad = 1:3
 
     pc_thal = decomp.pcs_thal(:,grad);
 
-    PlotThalGradientSlicesAlt(pc_thal,decomp.used_seed_voxel_coords,cmap,['Thalamic seed PC',num2str(grad),' score'],2.1);
+    PlotThalGradientSlices(pc_thal,decomp.used_seed_voxel_coords,cmap,['Thalamic seed PC',num2str(grad),' score'],2.1);
     
     if make_figs
         print(['./figure_outputs/',savefldr,'/Thalamus_PC',num2str(grad),'_score.png'],'-dpng','-r300')

@@ -1,5 +1,7 @@
 function CompileTractGeneData()
 
+% This compiles all the tractography and gene data for thalamic seeds
+
 GenesKept = dlmread('GenesKept.txt');
 
 SeedGene = zeros(1811,length(GenesKept));
