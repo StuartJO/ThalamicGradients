@@ -10,6 +10,28 @@ The data I provide is at a minimum all preprocessed (basically it includes every
 
 Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the HCP website
 
+## Running analysis
+
+This will get all the decompositions, find the significant genes, and calculate gene trajectories.
+
+In MATLAB run
+```
+RunAnalysis_1.m
+RunAnalysis_2.m
+```
+Then in python run
+```
+RunAnalysis_3.py
+```
+Then in MATLAB again
+```
+RunAnalysis_4.m
+```
+Finally in python
+```
+RunAnalysis_5.py
+```
+
 ## Remaking all figures
 
 In MATLAB run:
@@ -175,6 +197,15 @@ I manually made a seperate Excel file which gives the metadata about each brain 
 ### Getting mouse connectivity and gene expression
 
 Go to the following [link](https://doi.org/10.5281/zenodo.4609603) and download the "AllenGeneDataset_19419.mat" and "Mouse_Connectivity_Data.mat" files. Or just uses these links for the [gene](https://zenodo.org/record/4609603/files/AllenGeneDataset_19419.mat?download=1) and [connectivity](https://zenodo.org/record/4609603/files/Mouse_Connectivity_Data.mat?download=1) data.
+
+
+### Getting the Phillip's genes
+
+The list of the top 500 most  is available from [Supplementary Data 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-019-0483-3/MediaObjects/41593_2019_483_MOESM3_ESM.xlsx) of the [paper](https://www.nature.com/articles/s41593-019-0483-3). Go to sheet "PC1-10_loadings", extract the first two columns and put them into a new .xlsx file called "PhillipsMouseThalGenes.xlsx" (for the genes, give that  the name "GeneSymbol"). Put this new file in ./data/preprocessed
+
+### Getting the human genes
+
+The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I corrected these were I could. I then compared this list with a list of genes 
 
 ### DropViz data
 

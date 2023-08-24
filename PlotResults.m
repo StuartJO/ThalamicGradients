@@ -2,7 +2,7 @@
 %% This script makes all the figures
 
 load('./data/processed/mouse_decomp.mat')
-load('./data/processed/main_decomp.mat')
+load('./data/processed/decomp_rand500.mat')
 %load('./data/preprocessed/AllenGeneDataset_19419.mat','structInfo')
 
 mkdir ./SourceDataTables
@@ -18,17 +18,17 @@ CorticalROIs = (1:length(pcs_cort(:,1)))';
 
 disp('Plot human PC results')
 
-decomp = load('./data/processed/main_decomp.mat');
+decomp_rand500 = load('./data/processed/decomp_rand500.mat');
 load('./data/ancillary/fsaverage_surface_data.mat')
 mkdir ./figure_outputs/Rand500_PCs
-Plot_PC123(decomp,lh_rand500,'Rand500_PCs')
+Plot_PC123(decomp_rand500,lh_rand500,'Rand500_PCs')
 
 mkdir ./figure_outputs/MNIcorr
-PlotPCs_vs_MNI(decomp,1,{'a','b','c'},'./figure_outputs/MNIcorr/');
-PlotPCs_vs_MNI(decomp,2,{'d','e','f'},'./figure_outputs/MNIcorr/');
-PlotPCs_vs_MNI(decomp,3,{'g','h','i'},'./figure_outputs/MNIcorr/');
+PlotPCs_vs_MNI(decomp_rand500,1,{'a','b','c'},'./figure_outputs/MNIcorr/');
+PlotPCs_vs_MNI(decomp_rand500,2,{'d','e','f'},'./figure_outputs/MNIcorr/');
+PlotPCs_vs_MNI(decomp_rand500,3,{'g','h','i'},'./figure_outputs/MNIcorr/');
 
-TableData = [decomp.pcs_thal(:,1:3) (decomp.used_seed_mni_coords*-1)];
+TableData = [decomp_rand500.pcs_thal(:,1:3) (decomp_rand500.used_seed_mni_coords*-1)];
 SourceDataTable = array2table(TableData,'VariableNames',{'PC1_score','PC2_score','PC3_score','MNI_x_coord','MNI_y_coord','MNI_z_coord'});
 writetable(SourceDataTable,'./SourceDataTables/FigS1.xlsx')
 
@@ -290,13 +290,13 @@ disp('Getting PC1 vs IT')
 
 figure
 
-decomp = load('./data/processed/main_decomp.mat');
+decomp_rand500 = load('./data/processed/decomp_rand500.mat');
 neuromap_corrs = load('./data/processed/NeuroMapCorrs_PC1.mat');
 
 IT_IND = find(strcmp(neuromap_corrs.name,'Intrinsic timescale'));
 IT = neuromap_corrs.neuromap_parc(:,IT_IND);
 
-pc1_cort = zscore(decomp.pcs_cort(:,1));
+pc1_cort = zscore(decomp_rand500.pcs_cort(:,1));
 
 if neuromap_corrs.p_perm(IT_IND) == 0
      pval_format = '{\itp_{spin}} < .0001 ';   
@@ -492,7 +492,7 @@ seedIn = MainGeneSeed.seed_ind + AllGeneSeed.seed_ind;
 
 CoverageCmap = [1 1 1; lines(2)];
 
-c = PlotThalGradientSlicesAlt(seedIn,seed_vox_coords,CoverageCmap,'Coverage',2.1);
+c = PlotThalGradientSlices(seedIn,seed_vox_coords,CoverageCmap,'Coverage',2.1);
 
 caxis([-.5 2.5])
 
@@ -511,7 +511,7 @@ close all
 
 tract_decomp = load('decomp_TractOnly.mat');
 
-main_decomp = load('main_decomp.mat');
+decomp_rand500 = load('decomp_rand500.mat');
 
 load('Bootstrap_results.mat');
 
@@ -520,13 +520,13 @@ offset_x = -.01;
 offset_y = .02;
 
 subplot(2,3,2)
-histogram(corr(main_decomp.score(:,1),scorePC1_boot))
+histogram(corr(decomp_rand500.score(:,1),scorePC1_boot))
 xlabel('Correlation with PC1 score')
 ylabel('Bootstrap count')
 title('Gene+connectivity')
 addPlotLabel('b',gca,24,[offset_x offset_y])
 subplot(2,3,3)
-histogram(corr(main_decomp.coeff(:,1),coeffPC1_boot))
+histogram(corr(decomp_rand500.coeff(:,1),coeffPC1_boot))
 xlabel('Correlation with PC1 loading')
 ylabel('Bootstrap count')
 title('Gene+connectivity')
@@ -554,7 +554,7 @@ V(i).ViolinPlot.LineWidth = .5;
 V(i).BoxColor = [0 0 0];
 end
 hold on
-plot(main_decomp.explained(1:5),'r','LineWidth',2)
+plot(decomp_rand500.explained(1:5),'r','LineWidth',2)
 xlabel('PC')
 ylabel('Variance explained')
 title('Gene+connectivity')
@@ -587,7 +587,7 @@ for i = 1:Nboots
     MainDecompTypeLabel{i+1} = ['Bootstrap',num2str(i),'PCA'];
 end
 ResultsTableHeader = {'BootstrapID','PC1_explained','PC2_explained','PC3_explained','PC4_explained','PC5_explained'};
-SourceDataTable = cell2table([MainDecompTypeLabel num2cell([main_decomp.explained(1:5)';expl_boot(:,1:5)])],'VariableNames',ResultsTableHeader);
+SourceDataTable = cell2table([MainDecompTypeLabel num2cell([decomp_rand500.explained(1:5)';expl_boot(:,1:5)])],'VariableNames',ResultsTableHeader);
 writetable(SourceDataTable,'./SourceDataTables/FigS7a.xlsx')
 
 Nboots = size(expl_boot_tract,1);
@@ -600,11 +600,11 @@ ResultsTableHeader = {'BootstrapID','PC1_explained','PC2_explained','PC3_explain
 SourceDataTable = cell2table([TractDecompTypeLabel num2cell([tract_decomp.explained(1:5)';expl_boot_tract(:,1:5)])],'VariableNames',ResultsTableHeader);
 writetable(SourceDataTable,'./SourceDataTables/FigS7d.xlsx')
 
-SourceData = corr(main_decomp.score(:,1),scorePC1_boot)';
+SourceData = corr(decomp_rand500.score(:,1),scorePC1_boot)';
 SourceDataTable = cell2table([TractDecompTypeLabel(2:end) num2cell(SourceData)],'VariableNames',{'BootstrapID','Correlation_with_PC1score'});
 writetable(SourceDataTable,'./SourceDataTables/FigS7b.xlsx')
 
-SourceData = corr(main_decomp.coeff(:,1),coeffPC1_boot)';
+SourceData = corr(decomp_rand500.coeff(:,1),coeffPC1_boot)';
 SourceDataTable = cell2table([TractDecompTypeLabel(2:end) num2cell(SourceData)],'VariableNames',{'BootstrapID','Correlation_with_PC1coeff'});
 writetable(SourceDataTable,'./SourceDataTables/FigS7c.xlsx')
 

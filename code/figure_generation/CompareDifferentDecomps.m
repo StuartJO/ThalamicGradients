@@ -1,6 +1,6 @@
 function CompareDifferentDecomps()
 
-main_decomp = load('./data/processed/main_decomp.mat');
+main_decomp = load('./data/processed/decomp_rand500.mat');
 
 load('./data/processed/alt_decomps.mat','AltEmbedding')
 

@@ -5,7 +5,7 @@ addpath(genpath('./'))
 % Uncomment the line below to remake the cortical spin test. Will take ages
 % GetCorticalSpinTestPerms()
 
-main_decomp = load('main_decomp.mat');
+main_decomp = load('./data/processed/decomp_rand500.mat');
 
 for i = 1:3
     neuromap_corrs = GetNeuromapCorrs(main_decomp.pcs_cort(:,i));
@@ -15,7 +15,7 @@ end
 
 %% Bootstrap and CV
 
-TractGeneData = load('CompiledTractGeneData_rand500.mat');
+TractGeneData = load('./data/preprocessed/CompiledTractGeneData_rand500.mat');
 CompiledTractData = load('./data/processed/TractGeneNorm_rand500.mat');
 
 TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.GeneData_norm];
@@ -31,11 +31,11 @@ expl_boot = zeros(Nboot,min(nVars,nObs)-1);
 
 h = waitbar(0,'Please wait...');
 
-if ~exist('BootstrappedInds.mat','file')
+if ~exist('./data/processed/BootstrappedInds.mat','file')
     BootInds = zeros(76,Nboot);
     BootIndsExist = 0;
 else
-    load('BootstrappedInds.mat','BootInds')
+    load('./data/processed/BootstrappedInds.mat','BootInds')
     BootIndsExist = 1;
 end
 
@@ -79,7 +79,7 @@ save('./data/processed/Bootstrap_results.mat','coeffPC1_boot','scorePC1_boot','e
 
 h = waitbar(0,'Please wait...');
 
-TractGeneData = load('CompiledTractGeneData_rand500.mat');
+TractGeneData = load('./data/preprocessed/CompiledTractGeneData_rand500.mat');
 
 nObs = sum(TractGeneData.seed_ind);
 scoresCV = nan(nObs);

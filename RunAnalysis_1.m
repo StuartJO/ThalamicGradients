@@ -5,7 +5,9 @@ disp('Performing all decompositions')
 
 addpath(genpath('./'))
 
-TractGeneData = load('CompiledTractGeneData_rand500.mat');
+%GetNiftiData()
+
+TractGeneData = load('./data/preprocessed/CompiledTractGeneData_rand500.mat');
 CompiledTractData = PrepareTractGeneData(TractGeneData);
 
 save('./data/processed/TractGeneNorm_rand500.mat','-struct','CompiledTractData')
@@ -16,7 +18,7 @@ Ncorts = size(CompiledTractData.TractData_norm,2);
 
 decomp = RunPCADecomp(TractData_GeneData_norm,CompiledTractData.seed_ind,1:Ncorts,Ncorts+1:size(TractData_GeneData_norm,2));
 decomp.GeneNames_human = CompiledTractData.GeneNames_human;
-save('./data/processed/main_decomp.mat','-struct','decomp')
+save('./data/processed/decomp_rand500.mat','-struct','decomp')
 
 for i = 1:3
 writematrix(decomp.score(:,i),['./data/processed/PC',num2str(i),'_thal.txt'],'Delimiter',' ')
@@ -28,7 +30,7 @@ SeedDists = squareform(pdist(seed_vox_coords(logical(TractGeneData.seed_ind),:))
 writematrix(SeedDists,'./data/processed/SeedDists.txt','Delimiter',' ')
 
 %%
-TractGeneData = load('CompiledTractGeneData_AllGeneSeed.mat');
+TractGeneData = load('./data/preprocessed/CompiledTractGeneData_AllGeneSeed.mat');
 CompiledTractData = PrepareTractGeneData(TractGeneData);
 save('./data/processed/TractGeneNorm_AllGeneSeed.mat','-struct','CompiledTractData')
 TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.GeneData_norm];
@@ -37,7 +39,7 @@ decomp = RunPCADecomp(TractData_GeneData_norm,CompiledTractData.seed_ind,1:Ncort
 decomp.GeneNames_human = CompiledTractData.GeneNames_human;
 save('./data/processed/decomp_AllGeneSeed.mat','-struct','decomp')
 
-TractGeneData = load('CompiledTractGeneData_Scha400.mat');
+TractGeneData = load('./data/preprocessed/CompiledTractGeneData_Scha400.mat');
 CompiledTractData = PrepareTractGeneData(TractGeneData);
 save('./data/processed/TractGeneNorm_Scha400.mat','-struct','CompiledTractData')
 TractData_GeneData_norm = [CompiledTractData.TractData_norm CompiledTractData.GeneData_norm];

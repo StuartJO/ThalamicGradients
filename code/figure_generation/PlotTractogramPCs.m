@@ -26,7 +26,7 @@ function PlotTractogramPCs()
 % and 'TractogramSuperior.png' in the 'figure_outputs' directory.
 
 % Load the necessary data
-load('./data/processed/main_decomp.mat', 'pcs_thal', 'pcs_cort')
+load('./data/processed/decomp_rand500.mat', 'pcs_thal', 'pcs_cort')
 
 % Define colormap and mappings for tractogram visualization
 numColors = 256;

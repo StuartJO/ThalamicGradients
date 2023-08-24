@@ -4,7 +4,7 @@ function [AltEmbedding, DecompName] = RunAltDecomps()
 %% Load in data
 
 % Load compiled tract and gene data
-load('./data/preprocessed/CompiledTractGeneData_Rand500.mat','GenesKept','ThalSeedAvg','ThalSeedGenesKept')
+load('./data/preprocessed/CompiledTractGeneData_rand500.mat','GenesKept','ThalSeedAvg','ThalSeedGenesKept')
 
 % Load gene names and IDs from Burt et al., 2020 Nature Neuroscience
 EntrezIDs_all = dlmread('./data/preprocessed/AHBAEntrez.txt');

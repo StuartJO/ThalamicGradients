@@ -1,4 +1,4 @@
-load('./data/processed/main_decomp.mat')
+load('./data/processed/decomp_rand500.mat')
 
 data = pca_input;
 d = squareform(pdist(data));

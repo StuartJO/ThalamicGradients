@@ -25,7 +25,7 @@ function neuromap_corrs = GetNeuromapCorrs(pc_cort,parc)
 
 % Check if input argument is provided, if not, load default pc_cort
 if nargin < 1
-    load('./data/processed/main_decomp.mat', 'pc1_cort')
+    load('./data/processed/decomp_rand500.mat', 'pc1_cort')
     pc_cort = pc1_cort;
 end
 

@@ -1,4 +1,4 @@
-MainGeneSeed = load('./data/processed/TractGeneNorm.mat');
+MainGeneSeed = load('./data/processed/TractGeneNorm_rand500.mat');
 AllGeneSeed = load('./data/processed/TractGeneNorm_AllGeneSeed.mat');
 
 load('./data/ancillary/MNI_Seed_voxelData.mat','seed_vox_coords','seed_mni_coords')
