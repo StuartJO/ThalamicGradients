@@ -6,9 +6,12 @@ Note that almost all of this code assumes relative paths based on running code f
 
 # Rerunning the code on the preprocessed data
 
-The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography data).
+The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography and gene data).
 
-Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the HCP website
+Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the [HCP website](https://db.humanconnectome.org/app/template/Login.vm)
+
+## Code requirements
+
 
 ## Running analysis
 
@@ -153,7 +156,7 @@ We also need a mask from the gene data. Using any of the 'X_mRNA.nii' files (I u
 ```
 fslmaths 12_mRNA.nii -bin GeneMask.nii.gz 
 ```
-### Melbourne subcortical atlas
+## Melbourne subcortical atlas
 
 The main thalamic mask was obtained from the [Melbourne subcortical atlas](https://github.com/yetianmed/subcortex) (the paper is [here](https://rdcu.be/b7N8K)). Specifically, we used [Tian_Subcortex_S1_3T_1mm.nii.gz](https://github.com/yetianmed/subcortex/blob/master/Group-Parcellation/3T/Subcortex-Only/Tian_Subcortex_S1_3T_1mm.nii.gz). Download and place in ./data/preprocessed
 
@@ -287,3 +290,26 @@ If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba81
 ### FreeSurfer and FSL data
 
 Have FreeSurfer and FSL installed. The code should pick up things for FSL (but in short, all this project needs is the 1mm MNI152 brain, which is found in "/usr/local/fsl/${VERSION}/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"). For FreeSurfer you'll need to extract the spherical surface (lh.sphere and rh.sphere) and label files (e.g., lh.aparc.annot and rh.aparc.annot) from the fsaverage 164k surface directory (e.g., "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} is the version number, the surfaces are in "surf" while the .annot files are in "label"). Note you can also read these MATLAB (commands can be found in /usr/local/fresurfer/${VERSION}/matlab) to replicate the data in "fsaverage_surface_data.mat" by reading in the white matter and inflated surfaces.
+
+### Getting example tracts
+
+Run the following to get the tracts for the example tractogram. Note the tracts are transformed to MNI152 space for a better visualisation
+```
+SUB="192035"
+WORKDIR="./data/tractography/SUBJECTS/${SUB}"
+EXAMPLETRACTDIR="/fs04/kg98/stuarto/SeedReg/ExampleTract"
+
+PARC="/projects/hcp1200_processed/2021/Preprocessed/${SUB}/T1w/parc/random500_acpc.nii"
+
+fslmaths ${PARC} -uthr 250 -bin ${SUB}_gm_mask_left.nii.gz
+mrconvert ${SUB}_gm_mask_left.nii.gz ${SUB}_gm_mask_left.nii
+
+mkdir -p ${EXAMPLETRACTDIR}/MNI
+mkdir -p ${EXAMPLETRACTDIR}/conn
+mkdir ${WORKDIR}/examples
+for i in {1..921}; do
+	tckedit ${WORKDIR}/tracts_921seeds/thal_seed_${i}.tck ${WORKDIR}/examples/seed_${i}.tck -number 25 -include ${WORKDIR}/${SUB}_gm_mask_left.nii
+	tck2connectome ${WORKDIR}/examples/seed_${i}.tck $PARC ${WORKDIR}/examples/seed_${i}_cp -vector -assignment_radial_search 5 -out_assignments ${EXAMPLETRACTDIR}/conn/seed_${i}_assignments -force
+	tcktransform ${WORKDIR}/examples/seed_${i}.tck ${WORKDIR}/warp_${SUB}toMNI.nii.gz ${EXAMPLETRACTDIR}/MNI/seed_${i}.tck -force -quiet -nthreads 0
+done
+```
