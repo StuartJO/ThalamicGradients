@@ -15,7 +15,7 @@ writecell([decomp_rand500.GeneNames_human num2cell(pc_gene_coeffs) num2cell(Auto
 
 if i == 1
     % Copy a version to ./data/gene_data/gene_lists
-   writecell([decomp_rand500.GeneNames_human num2cell(pc_gene_coeffs) num2cell(AutoCorrReslt.p_perm)],['./data/gene_data/gene_lists/AllHumanSpinTested.csv']) 
+   writecell([decomp_rand500.GeneNames_human num2cell(pc_gene_coeffs) num2cell(AutoCorrReslt.p_perm)],'./data/gene_data/gene_lists/AllHumanSpinTested.csv') 
 end
 
 writecell(AutoCorrReslt.MostPositive,['./data/processed/PC',num2str(i),'_HumanMostPositiveSpinTested.txt'])

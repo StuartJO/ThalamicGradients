@@ -46,7 +46,7 @@ for grad = 1:3
     caxis([min(pc_cort) max(pc_cort)])
     colormap(cmap)
     
-    print(['./figure_outputs/',savefldr,'/Cortical_PC',num2str(grad),'_coeff_nocmap.png'],'-dpng','-r600')
+    print(['./figure_outputs/',savefldr,'/Cortical_PC',num2str(grad),'_coeff_nocmap.png'],'-dpng','-r300')
     
     c = colorbar('Location','southoutside');
     set(c, 'Position',[.1 .23 .8 .05],'FontSize',38);

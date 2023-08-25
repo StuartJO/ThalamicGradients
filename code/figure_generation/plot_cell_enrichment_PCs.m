@@ -331,6 +331,9 @@ SubclusterEnrichTable = table(Neuronal_subcluster, Medial_enrichment, Medial_pFD
 % Customize variable names for the table
 SubclusterEnrichTable.Properties.VariableNames = {'Neuronal_subcluster', [NegativeName, '_enrichment'], [NegativeName, '_pFDR'], [PositiveName, '_enrichment'], [PositiveName, '_pFDR']};
 
+% Retrieve the outer position of the current axis
+axis_pos = get(gca, 'OuterPosition');
+
 % Calculate the vertical position for the annotation 'c'
 annotYpos = find_point_on_line(axis_pos(2), axis_pos(2) + axis_pos(4), 0.9);
 

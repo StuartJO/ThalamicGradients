@@ -1,4 +1,4 @@
-function c = PlotThalGradientSlicesAlt(GRAD_DATA, GRAD_DATA_vox_coord, grad_cmap, cbar_title, thr, ImageOnly)
+function c = PlotThalGradientSlices(GRAD_DATA, GRAD_DATA_vox_coord, grad_cmap, cbar_title, thr, ImageOnly)
 
 % Plot brain slices with thalamic gradient overlay.
 
@@ -11,7 +11,7 @@ function c = PlotThalGradientSlicesAlt(GRAD_DATA, GRAD_DATA_vox_coord, grad_cmap
 %   ImageOnly: Flag to indicate whether to plot only the image without annotations or colorbar.
 
 % Load necessary data
-load('MNI_Seed_voxelData.mat', 'braindata', 'thalmask')
+load('./data/preprocessed/MNI_Seed_voxelData.mat', 'braindata', 'thalmask')
 
 % Check if ImageOnly input is provided, otherwise default to 0
 if nargin < 6

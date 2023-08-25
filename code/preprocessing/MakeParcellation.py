@@ -4,7 +4,7 @@ from fragmenter import Fragment
 from fragmenter import adjacency
 from fragmenter import RegionExtractor
 
-vertices,faces = nb.freesurfer.io.read_geometry('./data/parecllation/lh.sphere')
+vertices,faces = nb.freesurfer.io.read_geometry('./data/parcellation/lh.sphere')
 
 # The medial wall in lh.aparc.annot doesn't for a single continuous region 
 # on the surface. We made a version which fixed this (by just assigning 
@@ -27,12 +27,12 @@ leftcortex = Fragment.Fragment(n_clusters=250)
 leftcortex.fit(vertices=vertices, faces=faces,
   parcels=parcels, rois=rois, method = 'k_means') 
   
-annot_name = './data/parecllation/lh.random500.annot'
+annot_name = './data/parcellation/lh.random500.annot'
 leftcortex.write(annot_name)   
 
-vertices,faces = nb.freesurfer.io.read_geometry('./data/parecllation/rh.sphere')
+vertices,faces = nb.freesurfer.io.read_geometry('./data/parcellation/rh.sphere')
 
-E = RegionExtractor.Extractor('./data/parecllation/rh.aparc_connected.annot')
+E = RegionExtractor.Extractor('./data/parcellation/rh.aparc_connected.annot')
 parcels = E.map_regions()
 
 rois=['bankssts','caudalanteriorcingulate','caudalmiddlefrontal','cuneus',
@@ -49,5 +49,5 @@ rightcortex = Fragment.Fragment(n_clusters=250)
 rightcortex.fit(vertices=vertices, faces=faces,
   parcels=parcels, rois=rois, method = 'k_means') 
   
-annot_name = './data/parecllation/rh.random500.annot'
+annot_name = './data/parcellation/rh.random500.annot'
 rightcortex.write(annot_name)   

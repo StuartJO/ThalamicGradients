@@ -18,7 +18,7 @@ yticks([])
 colormap(parula(1000))
 colorbar('Location','SouthOutside')
 set(gca,'FontSize',24)
-print('ConnMatrix.svg','-dsvg')
+print('./figure_outputs/ConnMatrix.svg','-dsvg')
 
 figure
 
@@ -29,7 +29,7 @@ yticks([])
 colorbar('Location','SouthOutside')
 set(gca,'FontSize',24)
 
-print('GeneMatrix.svg','-dsvg')
+print('./figure_outputs/GeneMatrix.svg','-dsvg')
 
 figure
 
@@ -43,7 +43,7 @@ xticks([])
 yticks([])
 colorbar('Location','SouthOutside')
 set(gca,'FontSize',24)
-print('JointMatrix.svg','-dsvg')
+print('./figure_outputs/JointMatrix.svg','-dsvg')
 
 figure('Position',[349 98 180 1068])
 imagesc(zscore(score(seed_order,1)))
@@ -51,11 +51,11 @@ colormap(turbo(256))
 xticks([])
 yticks([])
 
-print('PC1ScoreMatrix.svg','-dsvg')
+print('./figure_outputs/PC1ScoreMatrix.svg','-dsvg')
 
 figure('Position',[349 98 180 1068])
 imagesc(zscore(coeff([tract_order gene_order+length(tract_order)],1)))
 colormap(turbo(256))
 xticks([])
 yticks([])
-print('PC1CoeffMatrix.svg','-dsvg')
+print('./figure_outputs/PC1CoeffMatrix.svg','-dsvg')

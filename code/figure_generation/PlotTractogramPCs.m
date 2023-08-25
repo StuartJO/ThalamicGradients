@@ -53,7 +53,7 @@ figure
 imagesc(colormap2D);
 set(gca, 'YDir', 'normal')
 xlabel('Thalamic seed PC1 score')
-ylabel('Cortical ROI PC1 coefficient')
+ylabel('Cortical ROI PC1 loading')
 
 % Configure tick labels for PC scores and coefficients
 xticks_rescaled = rescale([-2:1 min(zscore(PC_THAL)) max(zscore(PC_THAL))], 1, 256);

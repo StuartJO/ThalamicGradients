@@ -1,6 +1,7 @@
 
 %% This script makes all the figures
 
+
 load('./data/processed/mouse_decomp.mat')
 load('./data/processed/decomp_rand500.mat')
 %load('./data/preprocessed/AllenGeneDataset_19419.mat','structInfo')
@@ -82,7 +83,7 @@ GeneNames_human = TractGeneNorm.GeneNames_human;
 
 SuppTable5_1 = table(TractGeneNorm.GeneNames_human,pcs_gene(:,1),pcs_gene(:,3),pcs_gene(:,2));
 
-PhillipsGeneTable = readtable('PhillipsMouseThalGenes.xlsx');
+PhillipsGeneTable = readtable('./data/preprocessed/PhillipsMouseThalGenes.xlsx');
 GeneNames_phillips = PhillipsGeneTable.GeneSymbol;
 GeneNames_phillips_upper = upper(GeneNames_phillips);
 
@@ -355,6 +356,7 @@ writetable(SourceDataTable,'./SourceDataTables/Fig3e.xlsx')
 close all
 
 %% Make cell enrichment plots (Figs 4, S22, S23)
+
 
 disp('Make cell enrichment plots')
 

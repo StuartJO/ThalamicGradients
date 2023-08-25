@@ -10,6 +10,8 @@ DecompTypeScatter = {{'','Diffusion embedding: PC1'},{'PCA on gene-expression','
 
 figure('Position',[0 0 1920 1080])
 
+mkdir ./figure_outputs/AltDecomps
+
 for i = 1:6
      subplot(2,3,i); 
      scatter(main_decomp.pcs_thal(:,1),zscore(AltEmbedding{i}(:,1)),'filled');    

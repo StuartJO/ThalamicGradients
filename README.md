@@ -19,18 +19,43 @@ In MATLAB run
 RunAnalysis_1.m
 RunAnalysis_2.m
 ```
-Then in python run
+Then run (via python)
 ```
-RunAnalysis_3.py
+python RunAnalysis_3.py
 ```
 Then in MATLAB again
 ```
 RunAnalysis_4.m
 ```
-Finally in python
+Finally then run
 ```
-RunAnalysis_5.py
+python RunAnalysis_5.py
+python RunAnalysis_6.py
 ```
+## Running WebGestalt
+
+To run the data through [WebGestalt](https://www.webgestalt.org/), set it up with the following parameters:
+
+Organism of Interest = Homo sapiens
+
+Method of Interest = Over-Representation Analysis (ORA)
+
+FUnctional Database = load in all the disease datasets (Disgenet; GLAD4U; OMIM)
+
+Gene ID Type = Gene symbol
+
+Gene List = Upload a PC${X}_HumanMost${POLARITY}SpinTested.txt file, where ${X} in the PC number and ${POLARITY} is either "Positive" or "Negative"
+
+Reference Set = genome protein-coding
+
+(then under advanced parameters)
+
+Minimum number of genes for a category = 5
+Maximum number of genes for a category = 2000
+Multiple Test Adjustment = BH
+Significance Level =  FDR, 0.05
+
+Then hit submit! Download the output and name it PC1Neg, PC2Pos etc depending on which file is being used. Uncompress the data in ./data/Web
 
 ## Remaking all figures
 
@@ -44,19 +69,7 @@ This will take around 20 minutes to run (with 75% of that just being the time it
 
 The plots were then combined seperately in Inkscape.
 
-## Running WebGestalt
-
-To run the data through [WebGestalt](https://www.webgestalt.org/), set it up with the following parameters:
-
-Organism of Interest = Homo sapiens
-
-Method of Interest = Over-Representation Analysis (ORA)
-
-PCX_HumanMostPositiveSpinTested.txt
-
-PCX_HumanMostNegativeSpinTested.txt
-
-## Running from the start
+# Running from the start
 
 If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source). The one exception is I don't detail how to process the HCP data 
 
@@ -83,16 +96,16 @@ dwi2fod msmt_csd dwi.mif RF_WM.txt FOD.mif RF_GM.txt GM.mif RF_CSF.txt csf.mif -
 
 If you did want to run things from scratch you need to have a parcellation registered to each individual (as a nifti volume) and for it to be aligned with the individuals diffusion space (which should be easy for HCP data).
 
-In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory call "custom" which contains all the data for fsaverage. In the "label" folder you'll need to add the .annot files included in ./data/parcellation. To run the following, you'll need to set the path to this directory (${SCRIPTLOCATION}), the cortical parcellation being used (${CORTICAL_PARC}; either "random500" or "Schaefer400_17net"). You'll also need to set a work directory (${WORKDIR}) to save the output, and also will need to configure a FreeSurfer setup file to point to all the correct directories (${FREESURFER_SETUP_FILE}).
+In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory called "fsaverage" which contains all the data for fsaverage (which can be found at "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} in the FreeSurfer version). In the "label" folder you'll need to add the .annot files included in ./data/parcellation. To run the following, you'll need to set the path to this directory (${SCRIPTLOCATION}), the cortical parcellation being used (${CORTICAL_PARC}; either "random500" or "Schaefer400_17net"). You'll also need to set a work directory (${WORKDIR}) to save the output, and also will need to configure a FreeSurfer setup file to point to all the correct directories (${FREESURFER_SETUP_FILE}).
 
 Note because some voxels in the left and right hemisphere could be mislabelled as belowing to the other hemisphere, we do a manual correction for this (Parc_correct_mislabel.m)
 
 ```
 source ${FREESURFER_SETUP_FILE}
 
-mri_surf2surf --srcsubject custom --hemi lh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/lh.${CORTICAL_PARC}.annot
+mri_surf2surf --srcsubject fsaverage --hemi lh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/lh.${CORTICAL_PARC}.annot
 
-mri_surf2surf --srcsubject custom --hemi rh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/rh.${CORTICAL_PARC}.annot
+mri_surf2surf --srcsubject fsaverage --hemi rh --sval-annot ${CORTICAL_PARC}.annot --trgsubject ${SUBJECTID}/T1w/${SUBJECTID} --srcsurfreg sphere.reg --trgsurfreg sphere.reg --tval ${HCPPARENTDIR}/${SUBJECTID}/T1w/${SUBJECTID}/label/rh.${CORTICAL_PARC}.annot
 
 mri_aparc2aseg --s ${SUBJECTID}/T1w/${SUBJECTID} --o ${WORKDIR}/${CORTICAL_PARC}+aseg.mgz --new-ribbon --annot ${CORTICAL_PARC}
 
@@ -115,9 +128,22 @@ fi
 matlab -nodisplay -nosplash -r "WheresMyScript='${SCRIPTLOCATION}'; addpath(genpath(WheresMyScript)); Parc_correct_mislabel('${WORKDIR}/${CORTICAL_PARC}_acpc_uncorr.nii','${WORKDIR}/ribbon_expanded.nii',${L_cort},${R_cort},'${WORKDIR}/${CORTICAL_PARC}_acpc.nii'); exit"
 ```
 
+If you want to make the random parcellation, run
+```
+python ./code/preprocessing/MakeParcellation.py
+```
+
+### Getting the genes to download
+
+The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Copy these to a file called "BrainGenes.xlsx", give it the header "BrainGenes", and save to ./data/preprocessed. Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I obtained a mapping from gene names to Entrez IDs from [here](https://github.com/BMHLab/AHBAprocessing). Specifically, download [this file](https://figshare.com/ndownloader/files/13346303), then extract the columns "gene entrez_id" and "gene symbol" and put in a new excel file called "AHBA_entrez_ids.xlsx" and save it to ./data/preprocessed. In MATLAB then run:
+
+```
+FindAHBAEntrezIDs()
+```
+
 ## Downloading the gene-expression data
 
-First we need all of the gene-expression data so run
+First we need all of the gene-expression data so run (please double check all the paths are correct for your system for all the shell script files)
 
 ```
 DownloadGeneData.sh
@@ -150,13 +176,11 @@ for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./M
 
 ## Making ancillary and other preprocessed data
 
-I also provide ancillary data (which I define as data largely used to help plotting or assist other functions) already formatted, but if you wanted to create some of this from scratch, please run in MATLAB
-
-
+To remake all of the other data needed, you can follow the following steps
 
 ### Getting mouse ancillary data
 
-To run MakeAncillaryData.m you'll need to go and download the original flatmap [here](http://download.alleninstitute.org/publications/allen_mouse_brain_common_coordinate_framework/cortical_surface_views/ccf/annotation/flatmap_dorsal.nrrd)
+To get the data to needed to make plots for the mouse, you'll need to go and download the original mouse flatmap [here](http://download.alleninstitute.org/publications/allen_mouse_brain_common_coordinate_framework/cortical_surface_views/ccf/annotation/flatmap_dorsal.nrrd) and place in ./data/ancillary. You'll need to compare the values in that image to those reported by [Harris et al, 2019](https://www.nature.com/articles/s41586-019-1716-z) in Figure 1b to build up a mapping (which I have done in ./data/ancillary/FlatMapIds.xlsx)
 
 Then to get a nifti file of the Allen Mouse Brain Atlas, go to the [Scalable Brain Atlas](https://scalablebrainatlas.incf.org/mouse/ABA_v3#downloads) and download the [P56_Atlas.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Atlas.nii.gz) and [P56_Annotation.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Annotation.nii.gz) files. Put them in ./data/ancillary
 
@@ -181,14 +205,14 @@ Then put 'Data_AMBAcortex.mat'  in ./data/preprocessed
 
 ### Mouse brain hierarchy
 
-We used an updated version of the brain hierarchy data used in the above. The file can be downloaded [here](https://github.com/AllenInstitute/MouseBrainHierarchy/blob/master/Output/TCCT_CCconf_iter.xls). Put it in ./data/preprocessed
+We used an updated version of the brain hierarchy data used in the above (from [this paper](https://www.nature.com/articles/s41586-019-1716-z)). The file can be downloaded [here](https://github.com/AllenInstitute/MouseBrainHierarchy/blob/master/Output/TCCT_CCconf_iter.xls). Put it in ./data/preprocessed
 
 ### Getting neuromaps data
 
-In python, run
+Run
 
 ```
-GetNeuroMaps.py
+python ./code/preprocessing/GetNeuroMaps.py
 ```
 Note you need the [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) to be installed for the above to work. This will download all the maps in the _current_ neuromaps release, so might not get the original 72 I used.
 
@@ -202,10 +226,6 @@ Go to the following [link](https://doi.org/10.5281/zenodo.4609603) and download 
 ### Getting the Phillip's genes
 
 The list of the top 500 most  is available from [Supplementary Data 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-019-0483-3/MediaObjects/41593_2019_483_MOESM3_ESM.xlsx) of the [paper](https://www.nature.com/articles/s41593-019-0483-3). Go to sheet "PC1-10_loadings", extract the first two columns and put them into a new .xlsx file called "PhillipsMouseThalGenes.xlsx" (for the genes, give that  the name "GeneSymbol"). Put this new file in ./data/preprocessed
-
-### Getting the human genes
-
-The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I corrected these were I could. I then compared this list with a list of genes 
 
 ### DropViz data
 
@@ -240,9 +260,9 @@ Place "mRNA-seq_hg38.gencode21.wholeGene.geneComposite.STAR.nochrM.gene.RPKM.nor
 "mRNA-seq.Temporal.DEX.xlsx" should be placed in ./data/gene_data/gene_lists
 <!-- (Also under "Processed Data", click "Single cell/nucleus RNA-seq", and download all the Prenatal Single cell RNA-seq files (Sample QC; Gene expression CPM, counts and cell type cluster; Cell type signatures)) -->
 
-Once downloaded, the following needs to be run, first in python:
+Once downloaded, the following needs to be run:
 ```
-./code/preprocessing/01__collate_bulk_tissue_data.py
+python ./code/preprocessing/01__collate_bulk_tissue_data.py
 ```
 
 And then in R
@@ -266,7 +286,7 @@ If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba81
 
 ### FreeSurfer and FSL data
 
-Just have FreeSurfer and FSL installed. The code should pick up things for FSL. For FreeSurfer you'll need to dig through and extract the surface files (e.g., inflated, white, pial, sphere .etc) from wherever the fsaverage 164k surface is. These should be read into MATLAB and saved. 
+Have FreeSurfer and FSL installed. The code should pick up things for FSL (but in short, all this project needs is the 1mm MNI152 brain, which is found in "/usr/local/fsl/${VERSION}/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"). For FreeSurfer you'll need to extract the spherical surface (lh.sphere and rh.sphere) and label files (e.g., lh.aparc.annot and rh.aparc.annot) from the fsaverage 164k surface directory (e.g., "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} is the version number, the surfaces are in "surf" while the .annot files are in "label"). Note you can also read these MATLAB (commands can be found in /usr/local/fresurfer/${VERSION}/matlab) to replicate the data in "fsaverage_surface_data.mat" by reading in the white matter and inflated surfaces.
 
 ### Melbourne subcortical atlas
 

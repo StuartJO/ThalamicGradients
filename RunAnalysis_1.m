@@ -5,6 +5,7 @@ disp('Performing all decompositions')
 
 addpath(genpath('./'))
 
+% Uncomment the line below to get the seed voxel coordinates if need be
 %GetNiftiData()
 
 TractGeneData = load('./data/preprocessed/CompiledTractGeneData_rand500.mat');

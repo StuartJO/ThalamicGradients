@@ -1,14 +1,14 @@
 #!/bin/env bash
 
 module load mrtrix
-module load fsl
+module load fsl/5.0.11
 module load ants/2.2.0 
-/projects/kg98/stuarto/ThalamicGradients/data/
-TRACTDIR="tractography"
+
+TRACTDIR="/projects/kg98/stuarto/ThalamicGradients/data/tractography"
 
 PREPROCESSEDDIR="/projects/kg98/stuarto/ThalamicGradients/data/preprocessed"
 
-#mkdir ${TRACTDIR}
+mkdir ${TRACTDIR}
 
 SUBJECT_LIST="/projects/kg98/stuarto/ThalamicGradients/UnrelatedSubs.txt"
 
@@ -21,8 +21,9 @@ if [ $RERUN = "1" ]; then
 fslmaths ${PREPROCESSEDDIR}/Tian_Subcortex_S1_3T_1mm.nii.gz -thr 11 -uthr 12 -bin ${PREPROCESSEDDIR}/Left_Thal.nii
 
 # Get the T1w's from FSL and copy them just for later ease of use
-cp /usr/local/fsl/6.0.4/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz ${TRACTDIR}/brain_1mm.nii.gz
-cp /usr/local/fsl/6.0.4/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz ${TRACTDIR}/brain_2mm.nii.gz
+cp /usr/local/fsl/5.0.11/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz ${TRACTDIR}/brain_1mm.nii.gz
+cp /usr/local/fsl/5.0.11/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz ${PREPROCESSEDDIR}/brain_1mm.nii.gz
+cp /usr/local/fsl/5.0.11/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz ${TRACTDIR}/brain_2mm.nii.gz
 
 # Make ${MM} seeds
 
