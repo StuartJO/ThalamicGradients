@@ -4,7 +4,7 @@ import os
 
 SAVEDIR='./data/processed/gene_trajectories'
 
-if not os.path.isdir(SAVEDIR)
+if not os.path.exists(SAVEDIR):
     os.mkdir(SAVEDIR)
 
 # load temporal DEX genes from Li et al
@@ -64,8 +64,8 @@ PCs=['PC1','PC2','PC3']
 for OUTNAME in PCs:
 
     # collect top 100 positive and top 100 negative
-    positive = pd.read_csv('./data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
-    negative = pd.read_csv('./data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+    positive = pd.read_csv('./data/processed/'+OUTNAME+'_HumanMostPositiveSpinTested.csv', header=None)[0].values
+    negative = pd.read_csv('./data/processed/'+OUTNAME+'_HumanMostNegativeSpinTested.csv', header=None)[0].values
     # PC
     all_genes = pd.read_csv('./data/gene_data/gene_lists/AllHumanSpinTested.csv', header=None)
     all_genes.columns = ['gene', 'pc','p']

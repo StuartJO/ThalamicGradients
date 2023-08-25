@@ -5,10 +5,10 @@ addpath(genpath('./'))
 % Uncomment the line below to remake the cortical spin test. Will take ages
 % GetCorticalSpinTestPerms()
 
-main_decomp = load('./data/processed/decomp_rand500.mat');
+decomp_rand500 = load('./data/processed/decomp_rand500.mat');
 
 for i = 1:3
-    neuromap_corrs = GetNeuromapCorrs(main_decomp.pcs_cort(:,i));
+    neuromap_corrs = GetNeuromapCorrs(decomp_rand500.pcs_cort(:,i));
     save(['./data/processed/NeuroMapCorrs_PC',num2str(i),'.mat'],'-struct','neuromap_corrs')
 end
 
@@ -92,7 +92,7 @@ for i = 1:nObs
     SeedCVind_(i) = [];
     
     TractData_norm_ = BF_NormalizeMatrix(TractGeneData.ThalSeedAvg(SeedCVind_,1:250),'scaledSigmoid');
-    GeneData_norm_ = BF_NormalizeMatrix(TractGeneData.SeedGene_kept(SeedCVind_,:),'scaledSigmoid');
+    GeneData_norm_ = BF_NormalizeMatrix(TractGeneData.ThalSeedGenesKept(SeedCVind_,:),'scaledSigmoid');
     
     TractData_GeneData_norm_ = [TractData_norm_ GeneData_norm_];
 
@@ -102,6 +102,6 @@ for i = 1:nObs
     waitbar(i/nObs,h,['Finished CV ',num2str(i)])
 end
 
-RMSE = sqrt(nanmean((main_decomp.score(:,1) - scoresCV).^2)); % Root Mean Squared Error
+RMSE = sqrt(nanmean((decomp_rand500.score(:,1) - scoresCV).^2)); % Root Mean Squared Error
 
 save('./data/processed/loocv_result.mat','RMSE','scoresCV')

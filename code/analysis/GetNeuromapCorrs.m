@@ -60,7 +60,7 @@ for i = 1:parc_size
 end
 
 % Load preprocessed permutation IDs for statistical analysis
-load('./data/processed/CorticalSpinTestPerms.mat', 'perm_id')
+load('./data/preprocessed/CorticalSpinTestPerms.mat', 'perm_id')
 
 % Store input data in the results structure
 neuromap_corrs.data = pc_cort;

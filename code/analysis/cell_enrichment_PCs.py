@@ -14,7 +14,7 @@ print(np.__version__)
 
 SAVEDIR='./data/processed/cell_enrichment'
 
-if not os.path.isdir(SAVEDIR)
+if not os.path.exists(SAVEDIR):
     os.mkdir(SAVEDIR)
 
 # Some functions for gene enrichment analyses
@@ -155,7 +155,7 @@ for OUTNAME in PCs:
 
 	# PC+ and PC- genes - change for the updated list of 100
 	# load top 100
-	positive_genes = pd.read_csv('./data/processed/HumanMostPositiveSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+	positive_genes = pd.read_csv('./data/processed/'+OUTNAME+'_HumanMostPositiveSpinTested.csv', header=None)[0].values
 	# identify homologs
 	positive_homologs = all_homologs[all_homologs['Gene name'].isin(list(positive_genes))]['Mouse gene name'].dropna()
 	# remove any not in background
@@ -167,7 +167,7 @@ for OUTNAME in PCs:
 	print('')
 
 	# as above but for bottom 100
-	negative_genes = pd.read_csv('./data/processed/HumanMostNegativeSpinTested_'+ OUTNAME + '.csv', header=None)[0].values
+	negative_genes = pd.read_csv('./data/processed/'+OUTNAME+'_HumanMostNegativeSpinTested.csv', header=None)[0].values
 	negative_homologs = all_homologs[all_homologs['Gene name'].isin(list(negative_genes))]['Mouse gene name'].dropna()
 	filtered_negative_homologs = list(set(negative_homologs) & set(thalamic_cell_genes))
 
