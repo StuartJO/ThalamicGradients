@@ -40,7 +40,7 @@ Organism of Interest = Homo sapiens
 
 Method of Interest = Over-Representation Analysis (ORA)
 
-FUnctional Database = load in all the disease datasets (Disgenet; GLAD4U; OMIM)
+Functional Database = load in all the disease datasets (Disgenet; GLAD4U; OMIM)
 
 Gene ID Type = Gene symbol
 
@@ -51,8 +51,11 @@ Reference Set = genome protein-coding
 (then under advanced parameters)
 
 Minimum number of genes for a category = 5
+
 Maximum number of genes for a category = 2000
+
 Multiple Test Adjustment = BH
+
 Significance Level =  FDR, 0.05
 
 Then hit submit! Download the output and name it PC1Neg, PC2Pos etc depending on which file is being used. Uncompress the data in ./data/Web
@@ -91,7 +94,6 @@ dwi2response -tempdir ./ msmt_5tt dwi.mif ACT.nii RF_WM.txt RF_GM.txt RF_CSF.txt
 dwi2fod msmt_csd dwi.mif RF_WM.txt FOD.mif RF_GM.txt GM.mif RF_CSF.txt csf.mif -mask nodif_brain_mask.nii.gz
 
 ```
-
 ## Making the parcellation
 
 If you did want to run things from scratch you need to have a parcellation registered to each individual (as a nifti volume) and for it to be aligned with the individuals diffusion space (which should be easy for HCP data).
@@ -132,15 +134,13 @@ If you want to make the random parcellation, run
 ```
 python ./code/preprocessing/MakeParcellation.py
 ```
-
-### Getting the genes to download
+## Getting the genes to download
 
 The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Copy these to a file called "BrainGenes.xlsx", give it the header "BrainGenes", and save to ./data/preprocessed. Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I obtained a mapping from gene names to Entrez IDs from [here](https://github.com/BMHLab/AHBAprocessing). Specifically, download [this file](https://figshare.com/ndownloader/files/13346303), then extract the columns "gene entrez_id" and "gene symbol" and put in a new excel file called "AHBA_entrez_ids.xlsx" and save it to ./data/preprocessed. In MATLAB then run:
 
 ```
 FindAHBAEntrezIDs()
 ```
-
 ## Downloading the gene-expression data
 
 First we need all of the gene-expression data so run (please double check all the paths are correct for your system for all the shell script files)
@@ -153,6 +153,9 @@ We also need a mask from the gene data. Using any of the 'X_mRNA.nii' files (I u
 ```
 fslmaths 12_mRNA.nii -bin GeneMask.nii.gz 
 ```
+### Melbourne subcortical atlas
+
+The main thalamic mask was obtained from the [Melbourne subcortical atlas](https://github.com/yetianmed/subcortex) (the paper is [here](https://rdcu.be/b7N8K)). Specifically, we used [Tian_Subcortex_S1_3T_1mm.nii.gz](https://github.com/yetianmed/subcortex/blob/master/Group-Parcellation/3T/Subcortex-Only/Tian_Subcortex_S1_3T_1mm.nii.gz). Download and place in ./data/preprocessed
 
 ## Making seeds
 
@@ -173,11 +176,9 @@ SUBJECT_LIST="/projects/kg98/stuarto/ThalamicGradients/VALIDSEED_UnrelatedSubs.t
 nsubs=$(wc -l ${SUBJECT_LIST} | awk '{ print $1 }')
 for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./MakeThalamicTracts.sh $SUB; done
 ```
-
 ## Making ancillary and other preprocessed data
 
 To remake all of the other data needed, you can follow the following steps
-
 ### Getting mouse ancillary data
 
 To get the data to needed to make plots for the mouse, you'll need to go and download the original mouse flatmap [here](http://download.alleninstitute.org/publications/allen_mouse_brain_common_coordinate_framework/cortical_surface_views/ccf/annotation/flatmap_dorsal.nrrd) and place in ./data/ancillary. You'll need to compare the values in that image to those reported by [Harris et al, 2019](https://www.nature.com/articles/s41586-019-1716-z) in Figure 1b to build up a mapping (which I have done in ./data/ancillary/FlatMapIds.xlsx)
@@ -269,7 +270,6 @@ And then in R
 ```
 ./code/preprocessing/02__all_models.nonlinear.R
 ```
-
 ### Human Protein Atlas
 
 To get the list of genes with protein expression in the human thalamus you can go here https://v21.proteinatlas.org/humanproteome/brain/thalamus, click on the "14704" link and it will take you to the download page for all the genes.
@@ -287,7 +287,3 @@ If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba81
 ### FreeSurfer and FSL data
 
 Have FreeSurfer and FSL installed. The code should pick up things for FSL (but in short, all this project needs is the 1mm MNI152 brain, which is found in "/usr/local/fsl/${VERSION}/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"). For FreeSurfer you'll need to extract the spherical surface (lh.sphere and rh.sphere) and label files (e.g., lh.aparc.annot and rh.aparc.annot) from the fsaverage 164k surface directory (e.g., "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} is the version number, the surfaces are in "surf" while the .annot files are in "label"). Note you can also read these MATLAB (commands can be found in /usr/local/fresurfer/${VERSION}/matlab) to replicate the data in "fsaverage_surface_data.mat" by reading in the white matter and inflated surfaces.
-
-### Melbourne subcortical atlas
-
-The main thalamic mask was obtained from the [Melbourne subcortical atlas](https://github.com/yetianmed/subcortex) (the paper is [here](https://rdcu.be/b7N8K)). Specifically, we used [Tian_Subcortex_S1_3T_1mm.nii.gz](https://github.com/yetianmed/subcortex/blob/master/Group-Parcellation/3T/Subcortex-Only/Tian_Subcortex_S1_3T_1mm.nii.gz). Download and place in ./data/preprocessed
