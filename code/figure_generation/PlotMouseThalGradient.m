@@ -1,7 +1,7 @@
-function PlotMouseThalGradientAlt(ThalData, BackGroundData, grad_cmap, cbar_title)
-% PlotMouseThalGradientAlt Plots thalamic gradient data on brain slices
+function PlotMouseThalGradient(ThalData, BackGroundData, grad_cmap, cbar_title)
+% PlotMouseThalGradient Plots thalamic gradient data on brain slices
 %
-%   PlotMouseThalGradientAlt(ThalData, BackGroundData, grad_cmap, TITLE)
+%   PlotMouseThalGradient(ThalData, BackGroundData, grad_cmap, TITLE)
 %
 %   Inputs:
 %   - ThalData: Thalamic gradient data to be plotted.
