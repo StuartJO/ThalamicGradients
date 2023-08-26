@@ -332,6 +332,8 @@ EXAMPLETRACTDIR="./data/ExampleTract"
 
 PARC="/projects/hcp1200_processed/2021/Preprocessed/${SUB}/T1w/parc/random500_acpc.nii"
 
+warpconvert /projects/hcp1200_processed/2021/Preprocessed/${SUB}/MNINonLinear/xfms/standard2acpc_dc.nii.gz displacement2deformation ${WORKDIR}/warp_${SUB}toMNI.nii.gz -quiet -force
+
 fslmaths ${PARC} -uthr 250 -bin ${SUB}_gm_mask_left.nii.gz
 mrconvert ${SUB}_gm_mask_left.nii.gz ${SUB}_gm_mask_left.nii
 
