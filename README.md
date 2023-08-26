@@ -20,9 +20,9 @@ Note that to get the demographic data for the HCP subjects, you'll need to (appl
 
 The code has been run with the following versions of code:
 
-- Matlab 2020a
+- [Matlab 2020a](https://www.mathworks.com/products/new_products/release2020a.html)
 	- [BrainSpace](https://brainspace.readthedocs.io/en/latest/index.html) 0.1.10
-- Python 3.8.5
+- [Python 3.8.5](https://www.python.org/downloads/release/python-385/)
 	- [numpy](https://numpy.org/) 1.19.2
 	- [pandas](https://pandas.pydata.org/) 1.13
 	- [scipy](https://scipy.org/) 1.5.2
@@ -30,12 +30,12 @@ The code has been run with the following versions of code:
 	- [neuromaps](https://netneurolab.github.io/neuromaps/index.html) 0.0.3
 	- [parcellation_fragmenter](https://github.com/miykael/parcellation_fragmenter)
 	- [nibabel](https://nipy.org/nibabel/) 4.0.2
-- R 3.6.0
+- [R](https://www.r-project.org/) 3.6.0
 	- [nlme](https://rdrr.io/cran/nlme/) 3.1-161
 	- [mgcv](https://rdrr.io/cran/nlme/) 1.8-41
 	- [tidyverse](https://rdrr.io/cran/tidyverse/) 1.3.2
 	- [DescTools](https://rdrr.io/cran/DescTools/) 0.99.47
-- FreeSurfer 5.3.0
+- [FreeSurfer](https://surfer.nmr.mgh.harvard.edu/) 5.3.0
 - [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL) 5.0.11
 - [MRtrix](https://www.mrtrix.org/) 0.3.15
 - [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) 1.5.0
