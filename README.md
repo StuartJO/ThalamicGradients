@@ -12,7 +12,7 @@ If you have questions you can email me: stuart.oldham@mcri.edu.au
 
 # Rerunning the code on the preprocessed data
 
-The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography and gene data). This can be downloaded from [here](https://doi.org/10.25374/MCRI.21556659). Unzip it into this directory.
+The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography and gene data). This can be downloaded from [here](https://doi.org/10.5281/zenodo.8285838). Unzip it into this directory.
 
 Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the [HCP website](https://db.humanconnectome.org/app/template/Login.vm)
 
@@ -62,6 +62,9 @@ Finally then run
 python RunAnalysis_5.py
 python RunAnalysis_6.py
 ```
+
+Note that the notebooks (cell_enrichment.ipynb and gene_trajectory_analysis.ipynb) do the same as RunAnalysis_5.py and RunAnalysis_6.py but for PC1, and give some more explanations
+
 ## Running WebGestalt
 
 To run the data through [WebGestalt](https://www.webgestalt.org/), set it up with the following parameters:
@@ -130,6 +133,8 @@ If you want to make the random parcellation, run
 ```
 python ./code/preprocessing/MakeParcellation.py
 ```
+
+To get the Schaefer 400 17 network parcellation, go [here](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/FreeSurfer5.3/fsaverage/label) and download the lh.Schaefer2018_400Parcels_17Networks_order.annot and rh.Schaefer2018_400Parcels_17Networks_order.annot files. I renamed them lh.Schaefer400_17net.annot and rh.Schaefer400_17net.annot for easier handling.
 
 In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory called "fsaverage" which contains all the data for fsaverage (which can be found at "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} in the FreeSurfer version). In the "label" folder you'll need to add the .annot files included in ./data/parcellation. To run the following, you'll need to set the path to this directory (${SCRIPTLOCATION}), the cortical parcellation being used (${CORTICAL_PARC}; either "random500" or "Schaefer400_17net"). You'll also need to set a work directory (${WORKDIR}) to save the output, and also will need to configure a FreeSurfer setup file to point to all the correct directories (${FREESURFER_SETUP_FILE}).
 
