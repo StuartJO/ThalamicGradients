@@ -289,7 +289,7 @@ Note that we used v21.1 of the Human Protein Atlas. Now the atlas is up to versi
 
 ### Homolog mouse-human genes from Ensembl Biomart
 
-If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba815796782ab3e8bc620b?VIRTUALSCHEMANAME=default&ATTRIBUTES=hsapiens_gene_ensembl.default.homologs.ensembl_gene_id|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_ensembl_gene|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_associated_gene_name|hsapiens_gene_ensembl.default.homologs.external_gene_name&FILTERS=&VISIBLEPANEL=attributepanel), it will set up all the parameters (in the correct order as well) for you to download (download by setting "Export all results to" to "File" and "CSV", then click go and it will download a txt file). Download and place in ./data/gene_data/gene_lists
+If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba815796782ab3e8bc620b?VIRTUALSCHEMANAME=default&ATTRIBUTES=hsapiens_gene_ensembl.default.homologs.ensembl_gene_id|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_ensembl_gene|hsapiens_gene_ensembl.default.homologs.mmusculus_homolog_associated_gene_name|hsapiens_gene_ensembl.default.homologs.external_gene_name&FILTERS=&VISIBLEPANEL=attributepanel), it will set up all the parameters (in the correct order as well) for you to download (download by setting "Export all results to" to "File" and "CSV", then click go and it will download a .txt file). Download and place in ./data/gene_data/gene_lists
 
 ### FreeSurfer and FSL data
 
@@ -301,7 +301,7 @@ Run the following to get the tracts for the example tractogram. Note the tracts 
 ```
 SUB="192035"
 WORKDIR="./data/tractography/SUBJECTS/${SUB}"
-EXAMPLETRACTDIR="/fs04/kg98/stuarto/SeedReg/ExampleTract"
+EXAMPLETRACTDIR="./data/ExampleTract"
 
 PARC="/projects/hcp1200_processed/2021/Preprocessed/${SUB}/T1w/parc/random500_acpc.nii"
 
