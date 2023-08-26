@@ -6,16 +6,39 @@ Note only does this give the code, but it also tells you _exactly_ where to go a
 
 Note that almost all of this code assumes relative paths based on running code from the main directory (i.e., the one this file is originally located in)
 
+If you have questions you can email me: stuart.oldham@mcri.edu.au
+
 <sub>*almost all<sub>
 
 # Rerunning the code on the preprocessed data
 
-The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography and gene data).
+The data I provide is at a minimum all preprocessed (basically it includes everything except the raw tractography and gene data). This can be downloaded from [here](https://doi.org/10.25374/MCRI.21556659). Unzip it into this directory.
 
 Note that to get the demographic data for the HCP subjects, you'll need to (apply for and then) download the restricted data from the [HCP website](https://db.humanconnectome.org/app/template/Login.vm)
 
 ## Code requirements
 
+The code has been run with the following versions of code:
+
+- Matlab 2020a
+	- [BrainSpace](https://brainspace.readthedocs.io/en/latest/index.html) 0.1.10
+- Python 3.8.5
+	- [numpy](https://numpy.org/) 1.19.2
+	- [pandas](https://pandas.pydata.org/) 1.13
+	- [scipy](https://scipy.org/) 1.5.2
+	- [brainSMASH](https://github.com/murraylab/brainsmash) 0.11.0
+	- [neuromaps](https://netneurolab.github.io/neuromaps/index.html) 0.0.3
+	- [parcellation_fragmenter](https://github.com/miykael/parcellation_fragmenter)
+	- [nibabel](https://nipy.org/nibabel/) 4.0.2
+- R 3.6.0
+	- [nlme](https://rdrr.io/cran/nlme/) 3.1-161
+	- [mgcv](https://rdrr.io/cran/nlme/) 1.8-41
+	- [tidyverse](https://rdrr.io/cran/tidyverse/) 1.3.2
+	- [DescTools](https://rdrr.io/cran/DescTools/) 0.99.47
+- FreeSurfer 5.3.0
+- [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSL) 5.0.11
+- [MRtrix](https://www.mrtrix.org/) 0.3.15
+- [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) 1.5.0
 
 ## Running analysis
 
@@ -81,29 +104,32 @@ The plots were then combined seperately in Inkscape.
 
 # Running from the start
 
-If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source). The one exception is I don't detail how to process the HCP data 
+If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source). The one exception is I don't detail how to process the HCP data.
+
+Note that the links to everything were working as of 24 August 2023.
 
 ## Processing diffusion data
 
- Making seeds, and getting gene-expression and connectivity
-
-The code doesn't include the raw diffusion or gene-expression data because that would use up far too much space.
-
-The basic steps that were applied to the (minimally preprocessed) HCP data are as follows
+The basic steps that were applied to the (minimally preprocessed) HCP data are as follows. Download the data from the [server](https://db.humanconnectome.org/app/template/Login.vm). You'll need the preprocessed structural, preprocessed extended structural, and preprocessed diffusion data. Unzip the downloaded data to ${HCPPARENTDIR} (set to whereever appropriate). Then for a given subject (${SUBJECTID}) run the follwoing (note to define a ${WORKDIR} to save the output):
 
 ```
-mrconvert data.nii.gz dwi.mif -fslgrad bvecs bvals -datatype float32 -stride 0,0,0,1
+mrconvert ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/data.nii.gz ${WORKDIR}/dwi.mif -fslgrad ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/bvecs ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/bvals -datatype float32 -stride 0,0,0,1
 
-5ttgen -tempdir ./ fsl T1w_acpc_dc_restore_brain.nii.gz ./ACT.nii -premasked -nocrop
+5ttgen -tempdir ./ fsl ${HCPPARENTDIR}/${SUBJECTID}/T1w/T1w_acpc_dc_restore_brain.nii.gz ${WORKDIR}/ACT.nii -premasked -nocrop
 
-dwi2response -tempdir ./ msmt_5tt dwi.mif ACT.nii RF_WM.txt RF_GM.txt RF_CSF.txt -voxels RF_voxels.mif
+dwi2response -tempdir ./ ${WORKDIR}/msmt_5tt ${WORKDIR}/dwi.mif ${WORKDIR}/ACT.nii ${WORKDIR}/RF_WM.txt ${WORKDIR}/RF_GM.txt ${WORKDIR}/RF_CSF.txt -voxels ${WORKDIR}/RF_voxels.mif
 
-dwi2fod msmt_csd dwi.mif RF_WM.txt FOD.mif RF_GM.txt GM.mif RF_CSF.txt csf.mif -mask nodif_brain_mask.nii.gz
+dwi2fod msmt_csd ${WORKDIR}/dwi.mif ${WORKDIR}/RF_WM.txt ${WORKDIR}/FOD.mif ${WORKDIR}/RF_GM.txt ${WORKDIR}/GM.mif ${WORKDIR}/RF_CSF.txt ${WORKDIR}/csf.mif -mask ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/nodif_brain_mask.nii.gz
 
 ```
 ## Making the parcellation
 
 If you did want to run things from scratch you need to have a parcellation registered to each individual (as a nifti volume) and for it to be aligned with the individuals diffusion space (which should be easy for HCP data).
+
+If you want to make the random parcellation, run
+```
+python ./code/preprocessing/MakeParcellation.py
+```
 
 In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory called "fsaverage" which contains all the data for fsaverage (which can be found at "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} in the FreeSurfer version). In the "label" folder you'll need to add the .annot files included in ./data/parcellation. To run the following, you'll need to set the path to this directory (${SCRIPTLOCATION}), the cortical parcellation being used (${CORTICAL_PARC}; either "random500" or "Schaefer400_17net"). You'll also need to set a work directory (${WORKDIR}) to save the output, and also will need to configure a FreeSurfer setup file to point to all the correct directories (${FREESURFER_SETUP_FILE}).
 
@@ -137,10 +163,6 @@ fi
 matlab -nodisplay -nosplash -r "WheresMyScript='${SCRIPTLOCATION}'; addpath(genpath(WheresMyScript)); Parc_correct_mislabel('${WORKDIR}/${CORTICAL_PARC}_acpc_uncorr.nii','${WORKDIR}/ribbon_expanded.nii',${L_cort},${R_cort},'${WORKDIR}/${CORTICAL_PARC}_acpc.nii'); exit"
 ```
 
-If you want to make the random parcellation, run
-```
-python ./code/preprocessing/MakeParcellation.py
-```
 ## Getting the genes to download
 
 The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Copy these to a file called "BrainGenes.xlsx", give it the header "BrainGenes", and save to ./data/preprocessed. Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I obtained a mapping from gene names to Entrez IDs from [here](https://github.com/BMHLab/AHBAprocessing). Specifically, download [this file](https://figshare.com/ndownloader/files/13346303), then extract the columns "gene entrez_id" and "gene symbol" and put in a new excel file called "AHBA_entrez_ids.xlsx" and save it to ./data/preprocessed. In MATLAB then run:
@@ -153,7 +175,7 @@ FindAHBAEntrezIDs()
 First we need all of the gene-expression data so run (please double check all the paths are correct for your system for all the shell script files)
 
 ```
-DownloadGeneData.sh
+./code/preprocessing/DownloadGeneData.sh
 ```
 
 We also need a mask from the gene data. Using any of the 'X_mRNA.nii' files (I used gene number 12; but they should all give the exact same result) do the following:
@@ -168,7 +190,7 @@ The main thalamic mask was obtained from the [Melbourne subcortical atlas](https
 
 To generate the seeds run the following in bash:
 ```
-MakeSeeds.sh
+./code/preprocessing/MakeSeeds.sh
 ```
 To obtain the final list of seeds to use, in MATLAB run
 
@@ -181,7 +203,7 @@ Once this is done you can then generate tractograms from each seed by running th
 ```
 SUBJECT_LIST="/projects/kg98/stuarto/ThalamicGradients/VALIDSEED_UnrelatedSubs.txt"
 nsubs=$(wc -l ${SUBJECT_LIST} | awk '{ print $1 }')
-for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./MakeThalamicTracts.sh $SUB; done
+for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./code/preprocessing/MakeThalamicTracts.sh $SUB; done
 ```
 ## Making ancillary and other preprocessed data
 
