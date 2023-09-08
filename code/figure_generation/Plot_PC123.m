@@ -16,8 +16,8 @@ for grad = 1:3
     PlotThalGradientSlices(pc_thal,decomp.used_seed_voxel_coords,cmap,['Thalamic seed PC',num2str(grad),' score'],2.1);
     
     if make_figs
-        print(['./figure_outputs/',savefldr,'/Thalamus_PC',num2str(grad),'_score.png'],'-dpng','-r300')
-        print(['./figure_outputs/',savefldr,'/Thalamus_PC',num2str(grad),'_score.svg'],'-dsvg','-r300')
+        print([savefldr,'/Thalamus_PC',num2str(grad),'_score.png'],'-dpng','-r300')
+        print([savefldr,'/Thalamus_PC',num2str(grad),'_score.svg'],'-dsvg','-r300')
     end
     
     surface.vertices = lh_inflated_verts;
@@ -45,20 +45,24 @@ for grad = 1:3
 
     caxis([min(pc_cort) max(pc_cort)])
     colormap(cmap)
-    
-    print(['./figure_outputs/',savefldr,'/Cortical_PC',num2str(grad),'_coeff_nocmap.png'],'-dpng','-r300')
-    
-    c = colorbar('Location','southoutside');
-    set(c, 'Position',[.1 .23 .8 .05],'FontSize',38);
-    c.Label.String = ['Cortical region PC',num2str(grad),' loading'];
+       
 
     if make_figs
-        print(['./figure_outputs/',savefldr,'/Cortical_PC',num2str(grad),'_coeff.png'],'-dpng','-r300')
+        print([savefldr,'/Cortical_PC',num2str(grad),'_coeff_nocmap.png'],'-dpng','-r300')
+    
+        c = colorbar('Location','southoutside');
+        set(c, 'Position',[.1 .23 .8 .05],'FontSize',38);
+        c.Label.String = ['Cortical region PC',num2str(grad),' loading'];
+        print([savefldr,'/Cortical_PC',num2str(grad),'_coeff.png'],'-dpng','-r300')
         delete(p1)
         delete(p2)
         delete(b1.boundary)
         delete(b2.boundary)
-        print(['./figure_outputs/',savefldr,'/Cortical_PC',num2str(grad),'_coeff.svg'],'-dsvg','-r300')
+        print([savefldr,'/Cortical_PC',num2str(grad),'_coeff.svg'],'-dsvg','-r300')
+    else
+        c = colorbar('Location','southoutside');
+        set(c, 'Position',[.1 .23 .8 .05],'FontSize',38);
+        c.Label.String = ['Cortical region PC',num2str(grad),' loading'];        
     end
 
 end

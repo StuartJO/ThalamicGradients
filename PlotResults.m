@@ -1,6 +1,7 @@
 
 %% This script makes all the figures
 
+addpath(genpath('./'))
 
 load('./data/processed/mouse_decomp.mat')
 load('./data/processed/decomp_rand500.mat')
@@ -22,7 +23,7 @@ disp('Plot human PC results')
 decomp_rand500 = load('./data/processed/decomp_rand500.mat');
 load('./data/ancillary/fsaverage_surface_data.mat')
 mkdir ./figure_outputs/Rand500_PCs
-Plot_PC123(decomp_rand500,lh_rand500,'Rand500_PCs')
+Plot_PC123(decomp_rand500,lh_rand500,'./figure_outputs/Rand500_PCs');
 
 mkdir ./figure_outputs/MNIcorr
 PlotPCs_vs_MNI(decomp_rand500,1,{'a','b','c'},'./figure_outputs/MNIcorr/');
@@ -35,7 +36,7 @@ writetable(SourceDataTable,'./SourceDataTables/FigS1.xlsx')
 
 decompScha400 = load('./data/processed/decomp_Scha400.mat');
 mkdir ./figure_outputs/Scha400_PCs
-Plot_PC123(decompScha400,Scha17_parcs.lh_scha400,'Scha400_PCs');
+Plot_PC123(decompScha400,Scha17_parcs.lh_scha400,'./figure_outputs/Scha400_PCs');
 
 SourceDataTable = array2table([(1:921)' decompScha400.pcs_thal(:,1)],'VariableNames',{'Thalamic_Seed','PC1_score'});
 writetable(SourceDataTable,'./SourceDataTables/FigS15b.xlsx')
@@ -44,7 +45,7 @@ writetable(SourceDataTable,'./SourceDataTables/FigS15a.xlsx')
 
 decompAllGene = load('./data/processed/decomp_AllGeneSeed.mat');
 mkdir ./figure_outputs/AllGeneSeed_PCs
-Plot_PC123(decompAllGene,lh_rand500,'AllGeneSeed_PCs');
+Plot_PC123(decompAllGene,lh_rand500,'./figure_outputs/AllGeneSeed_PCs');
 
 SourceDataTable = array2table([ [1:length(decompAllGene.pcs_thal(:,1))]' decompAllGene.pcs_thal(:,1)],'VariableNames',{'Thalamic_Seed','PC1_score'});
 writetable(SourceDataTable,'./SourceDataTables/FigS6a.xlsx')
