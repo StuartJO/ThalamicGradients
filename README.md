@@ -1,6 +1,6 @@
 # ThalamicGradients
 
-This is code for "A phylogenetically-conserved axis of thalamocortical connectivity in the human brain", which is published [here](https://www.nature.com/articles/s41467-023-41722-8)
+This is code for "A phylogenetically-conserved axis of thalamocortical connectivity in the human brain", which is published [here](https://www.nature.com/articles/s41467-023-41722-8) If you use code or data from this project please cite the aforementioned paper 😊
 
 Not only does this give the code, but it also tells you _exactly_ where to go and what to do to collate all the data needed for this project (and if you don't want to do that, I already provide it *all for you!) 
 
