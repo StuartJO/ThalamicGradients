@@ -1,8 +1,8 @@
 # ThalamicGradients
 
-This is code for "A phylogenetically-conserved axis of thalamocortical connectivity in the human brain", a preprint which can be found [here](https://www.biorxiv.org/content/10.1101/2022.11.15.516574v1)
+This is code for "A phylogenetically-conserved axis of thalamocortical connectivity in the human brain", which is published [here](https://www.nature.com/articles/s41467-023-41722-8)
 
-Note only does this give the code, but it also tells you _exactly_ where to go and what to do to collate all the data needed for this project (and if you don't want to do that, I already provide it *all for you!) 
+Not only does this give the code, but it also tells you _exactly_ where to go and what to do to collate all the data needed for this project (and if you don't want to do that, I already provide it *all for you!) 
 
 Note that almost all of this code assumes relative paths based on running code from the main directory (i.e., the one this file is originally located in)
 
@@ -63,7 +63,7 @@ python RunAnalysis_5.py
 python RunAnalysis_6.py
 ```
 
-Note that the notebooks (cell_enrichment.ipynb and gene_trajectory_analysis.ipynb) do the same as RunAnalysis_5.py and RunAnalysis_6.py but for PC1, and give some more explanations
+Note that the notebooks (cell_enrichment.ipynb and gene_trajectory_analysis.ipynb) do the same as RunAnalysis_5.py and RunAnalysis_6.py but for PC1, and give some more explanations.
 
 ## Running WebGestalt
 
@@ -107,13 +107,13 @@ The plots were then combined seperately in Inkscape.
 
 # Running from the start
 
-If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source). The one exception is I don't detail how to process the HCP data.
+If you realllllly want to rerun everything, I detail how to do so below (including how to get all the data from their original source).
 
 Note that the links to everything were working as of 24 August 2023.
 
 ## Processing diffusion data
 
-The basic steps that were applied to the (minimally preprocessed) HCP data are as follows. Download the data from the [server](https://db.humanconnectome.org/app/template/Login.vm). You'll need the preprocessed structural, preprocessed extended structural, and preprocessed diffusion data. Unzip the downloaded data to ${HCPPARENTDIR} (set to whereever appropriate). Then for a given subject (${SUBJECTID}) run the follwoing (note to define a ${WORKDIR} to save the output):
+The basic steps that were applied to the (minimally preprocessed) HCP data are as follows. Download the data from the [server](https://db.humanconnectome.org/app/template/Login.vm). You'll need the preprocessed structural, preprocessed extended structural, and preprocessed diffusion data. Unzip the downloaded data to ${HCPPARENTDIR} (set to wherever appropriate). Then for a given subject (${SUBJECTID}) run the following (note to define a ${WORKDIR} to save the output):
 
 ```
 mrconvert ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/data.nii.gz ${WORKDIR}/dwi.mif -fslgrad ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/bvecs ${HCPPARENTDIR}/${SUBJECTID}/T1w/Diffusion/bvals -datatype float32 -stride 0,0,0,1
@@ -138,7 +138,7 @@ To get the Schaefer 400 17 network parcellation, go [here](https://github.com/Th
 
 In the directory which contains all the minimally processed structural data for all HCP subjects (${HCPPARENTDIR}), you'll need to make a directory called "fsaverage" which contains all the data for fsaverage (which can be found at "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} in the FreeSurfer version). In the "label" folder you'll need to add the .annot files included in ./data/parcellation. To run the following, you'll need to set the path to this directory (${SCRIPTLOCATION}), the cortical parcellation being used (${CORTICAL_PARC}; either "random500" or "Schaefer400_17net"). You'll also need to set a work directory (${WORKDIR}) to save the output, and also will need to configure a FreeSurfer setup file to point to all the correct directories (${FREESURFER_SETUP_FILE}).
 
-Note because some voxels in the left and right hemisphere could be mislabelled as belowing to the other hemisphere, we do a manual correction for this (Parc_correct_mislabel.m)
+Note because some voxels in the left and right hemisphere could be mislabelled as belonging to the other hemisphere, we do a manual correction for this (Parc_correct_mislabel.m)
 
 ```
 source ${FREESURFER_SETUP_FILE}
@@ -170,14 +170,14 @@ matlab -nodisplay -nosplash -r "WheresMyScript='${SCRIPTLOCATION}'; addpath(genp
 
 ## Getting the genes to download
 
-The list of from genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Copy these to a file called "BrainGenes.xlsx", give it the header "BrainGenes", and save to ./data/preprocessed. Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I obtained a mapping from gene names to Entrez IDs from [here](https://github.com/BMHLab/AHBAprocessing). Specifically, download [this file](https://figshare.com/ndownloader/files/13346303), then extract the columns "gene entrez_id" and "gene symbol" and put in a new excel file called "AHBA_entrez_ids.xlsx" and save it to ./data/preprocessed. In MATLAB then run:
+The list of genes showing elevated expression in the human brain can be found in [Supplementary Table 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-018-0195-0/MediaObjects/41593_2018_195_MOESM4_ESM.xlsx) from this [paper](https://www.nature.com/articles/s41593-018-0195-0). They are in the sheet called "Brain". Copy these to a file called "BrainGenes.xlsx", give it the header "BrainGenes", and save to ./data/preprocessed. Note that some of these are affected by the notorious Excel gene/data issue, where some genes are mislabeled as a date. I obtained a mapping from gene names to Entrez IDs from [here](https://github.com/BMHLab/AHBAprocessing). Specifically, download [this file](https://figshare.com/ndownloader/files/13346303), then extract the columns "gene entrez_id" and "gene symbol" and put in a new Excel file called "AHBA_entrez_ids.xlsx" and save it to ./data/preprocessed. In MATLAB run:
 
 ```
 FindAHBAEntrezIDs()
 ```
 ## Downloading the gene-expression data
 
-First we need all of the gene-expression data so run (please double check all the paths are correct for your system for all the shell script files)
+First, we need all of the gene-expression data so run (please double check all the paths are correct for your system for all the shell script files)
 
 ```
 ./code/preprocessing/DownloadGeneData.sh
@@ -215,9 +215,9 @@ for ID in $(seq 1 $nsubs); do SUB=$(sed -n "${ID}p" ${SUBJECT_LIST}); sbatch ./c
 To remake all of the other data needed, you can follow the following steps
 ### Getting mouse ancillary data
 
-To get the data to needed to make plots for the mouse, you'll need to go and download the original mouse flatmap [here](http://download.alleninstitute.org/publications/allen_mouse_brain_common_coordinate_framework/cortical_surface_views/ccf/annotation/flatmap_dorsal.nrrd) and place in ./data/ancillary. You'll need to compare the values in that image to those reported by [Harris et al, 2019](https://www.nature.com/articles/s41586-019-1716-z) in Figure 1b to build up a mapping (which I have done in ./data/ancillary/FlatMapIds.xlsx)
+To get the data needed to make plots for the mouse, you'll need to go and download the original mouse flatmap [here](http://download.alleninstitute.org/publications/allen_mouse_brain_common_coordinate_framework/cortical_surface_views/ccf/annotation/flatmap_dorsal.nrrd) and place in ./data/ancillary. You'll need to compare the values in that image to those reported by [Harris et al, 2019](https://www.nature.com/articles/s41586-019-1716-z) in Figure 1b to build up a mapping (which I have done in ./data/ancillary/FlatMapIds.xlsx)
 
-Then to get a nifti file of the Allen Mouse Brain Atlas, go to the [Scalable Brain Atlas](https://scalablebrainatlas.incf.org/mouse/ABA_v3#downloads) and download the [P56_Atlas.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Atlas.nii.gz) and [P56_Annotation.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Annotation.nii.gz) files. Put them in ./data/ancillary
+Then to get a .nii file of the Allen Mouse Brain Atlas, go to the [Scalable Brain Atlas](https://scalablebrainatlas.incf.org/mouse/ABA_v3#downloads) and download the [P56_Atlas.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Atlas.nii.gz) and [P56_Annotation.nii.gz](https://scalablebrainatlas.incf.org/templates/ABA_v3/source/P56_Annotation.nii.gz) files. Put them in ./data/ancillary
 
 The following MATLAB commands can then be run to process this data (note if you really are going from scratch, some additional files need to be created manually for these to run, see the details in the MATALB scripts for information on how to make them)
 
@@ -227,7 +227,7 @@ MakeFlatMap()
 GetMouseThalROIcentroid(0); % This step will probably take a while
 ```
 
-This will make and format the mouse parcellation, flat map, and get coordinates of mouse thalamic nuclei
+This will make and format the mouse parcellation, flat map, and get the coordinates of mouse thalamic nuclei
 
 ### Getting mouse cortical features
 
@@ -251,7 +251,7 @@ python ./code/preprocessing/GetNeuroMaps.py
 ```
 Note you need the [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench) to be installed for the above to work. This will download all the maps in the _current_ neuromaps release, so might not get the original 72 I used.
 
-I manually made a seperate Excel file which gives the metadata about each brain map, using [this](https://docs.google.com/spreadsheets/d/1oZecOsvtQEh5pQkIf8cB6CyhPKVrQuko/edit#gid=1162991686) as a reference.
+I manually made a separate Excel file that gives the metadata about each brain map, using [this](https://docs.google.com/spreadsheets/d/1oZecOsvtQEh5pQkIf8cB6CyhPKVrQuko/edit#gid=1162991686) as a reference.
 
 ### Getting mouse connectivity and gene expression
 
@@ -260,7 +260,7 @@ Go to the following [link](https://doi.org/10.5281/zenodo.4609603) and download 
 
 ### Getting the Phillip's genes
 
-The list of the top 500 most  is available from [Supplementary Data 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-019-0483-3/MediaObjects/41593_2019_483_MOESM3_ESM.xlsx) of the [paper](https://www.nature.com/articles/s41593-019-0483-3). Go to sheet "PC1-10_loadings", extract the first two columns and put them into a new .xlsx file called "PhillipsMouseThalGenes.xlsx" (for the genes, give that  the name "GeneSymbol"). Put this new file in ./data/preprocessed
+The list of the top 500 most differentially expressed genes from Phillip's et al. is available from [Supplementary Data 2](https://static-content.springer.com/esm/art%3A10.1038%2Fs41593-019-0483-3/MediaObjects/41593_2019_483_MOESM3_ESM.xlsx) of the [paper](https://www.nature.com/articles/s41593-019-0483-3). Go to sheet "PC1-10_loadings", extract the first two columns and put them into a new .xlsx file called "PhillipsMouseThalGenes.xlsx" (for the genes, give them the header name "Gene Symbol", and the loadings call "PC1"). Put this new file in ./data/preprocessed
 
 ### DropViz data
 
@@ -268,7 +268,7 @@ Use this [link](http://dropviz.org/?_state_id_=061c47a2583ad172) to go to the Dr
 
 Under the "Target cluster" dropdown menu, load in a cluster. The table in the bottom of the webpage (called "Differentially Over-Expressed") will then update. There is a download button next to the header, use that to download the data. Repeat for all the clusters. This gives all the cell classes (we renamed each file according to the name of each cluster e.g.,"TH Fibroblast-Like_Dcn [#6]" would be named "TH_Fibroblast-Like_Dcn.csv". Note we made additional clusters by combining all neuron clusters into a single file, and combining all the oligodendrocyte clusters into a single file (with the "_ALL" suffix added.) Place these in ./data/gene_data/gene_lists
 
-Next, up the top click the "Subclusters" header. Under the "Target Subcluster" dropdown menu, load in a subclusters. Repeat as above for only neuron subclusters (we renamed each file according to the _number_ of each cluster e.g., "TH Neuron.Gad1Gad2.Six3-Adcy1 [#3-1]" would be called "3-1.csv"). Place these in ./data/gene_data/gene_lists/subclusters
+Next, up the top click the "Subclusters" header. Under the "Target Subcluster" dropdown menu, load in the subclusters. Repeat as above for only neuron subclusters (we renamed each file according to the _number_ of each cluster e.g., "TH Neuron.Gad1Gad2.Six3-Adcy1 [#3-1]" would be called "3-1.csv"). Place these in ./data/gene_data/gene_lists/subclusters
 
 To get the TSNE coordinates, make sure you have selected the "Subclusters" tab and click the "tSNE" button underneath. Then click the "Display" tab in the Parameters box. Under "t-SNE Plot Settings", set the "Downsample Cell" to "Show all". Then click the download button up the top (or just click this link
 
