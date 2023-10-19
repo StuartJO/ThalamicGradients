@@ -320,7 +320,7 @@ If you click this [link](http://asia.ensembl.org/biomart/martview/4a48fd04cdba81
 
 ### FreeSurfer and FSL data
 
-Have FreeSurfer and FSL installed. The code should pick up things for FSL (but in short, all this project needs is the 1mm MNI152 brain, which is found in "/usr/local/fsl/${VERSION}/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"). For FreeSurfer you'll need to extract the spherical surface (lh.sphere and rh.sphere) and label files (e.g., lh.aparc.annot and rh.aparc.annot) from the fsaverage 164k surface directory (e.g., "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} is the version number, the surfaces are in "surf" while the .annot files are in "label"). Note you can also read these MATLAB (commands can be found in /usr/local/fresurfer/${VERSION}/matlab) to replicate the data in "fsaverage_surface_data.mat" by reading in the white matter and inflated surfaces.
+Have FreeSurfer and FSL installed. The code should pick up things for FSL (but in short, all this project needs is the 1mm MNI152 brain, which is found in "/usr/local/fsl/${VERSION}/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"). For FreeSurfer you'll need to extract the spherical surface (lh.sphere and rh.sphere) and label files (e.g., lh.aparc.annot and rh.aparc.annot) from the fsaverage 164k surface directory (e.g., "/usr/local/freesurfer/${VERSION}/subjects/fsaverage" where ${VERSION} is the version number, the surfaces are in "surf" while the .annot files are in "label"). Note you can also read these into MATLAB (commands can be found in /usr/local/freesurfer/${VERSION}/matlab) to replicate the data in "fsaverage_surface_data.mat" by reading in the white matter and inflated surfaces.
 
 ### Getting example tracts
 
