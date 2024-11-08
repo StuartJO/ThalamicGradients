@@ -67,7 +67,7 @@ Note that the notebooks (cell_enrichment.ipynb and gene_trajectory_analysis.ipyn
 
 ## Running WebGestalt
 
-To run the data through [WebGestalt](https://www.webgestalt.org/), set it up with the following parameters:
+To run the data through [WebGestalt](https://www.webgestalt.org/) (note that WebGestalt has been updated, the old version we used can be found [here](https://2019.webgestalt.org/), set it up with the following parameters:
 
 Organism of Interest = Homo sapiens
 
